@@ -1,0 +1,137 @@
+---
+title: "Exercise 2.7: Dummy Code Answer"
+author: "Tom Booth"
+date: "06/10/2020"
+output: 
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: '3'
+    theme: flatly
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Read in the data
+```{r}
+library(tidyverse)
+```
+
+The code below reads in the csv file. 
+
+```{r}
+dum_dat <- read_csv("dummy_code_data.csv")
+head(dum_dat)
+```
+
+Note that R is recognising method as a `dbl` or numeric. So we need to tell R this is a factor.
+
+```{r}
+dum_dat$method <- factor(dum_dat$method)
+head(dum_dat)
+```
+
+
+# Run mod1
+
+Now we can run the code from lecture and reproduce `mod1`
+
+```{r}
+mod1 <- lm(exam ~ method, data = dum_dat)
+summary(mod1)
+```
+
+You can cross check this against the lecture slides if you like.
+
+# Level 2 as baseline
+
+Now let's run the lecture code to change the baseline level
+
+```{r}
+contrasts(dum_dat$method) <- contr.treatment(3, base = 2)
+```
+
+# Run mod2
+
+And then run the `lm` code with the new baseline.
+
+```{r}
+mod2 <- lm(exam ~ method, data = dum_dat)
+summary(mod2)
+```
+
+And again, we reproduce what we have seen in lecture. OK, that is the easy bit done. Now to the new stuff.
+
+
+# Calculate group means
+
+In order to help us think about the value of the $b_1$ and $b_2$ coefficients when we use the third level as the baseline, we will need the group means (because remember these coefficients are the difference in means between levels of our categorical variable). 
+
+A tidyverse way to get the group means:
+
+```{r}
+gmean1 <- dum_dat %>%
+  group_by(method) %>%
+  summarise(
+    Mean = round(mean(exam),3)
+  )
+gmean1
+```
+
+Or, a base R variant:
+
+```{r}
+g1 <- round(mean(dum_dat$exam[dum_dat$method ==1]),3)
+g2 <- round(mean(dum_dat$exam[dum_dat$method ==2]),3)
+g3 <- round(mean(dum_dat$exam[dum_dat$method ==3]),3)
+
+g1
+g2
+g3
+```
+
+
+# Guess the values for method1 and method2 with level 3 as baseline
+
+In order to work this out, we first need to think about our dummy coding scheme when level 3 is the baseline. This is shown in the table below.
+
+```{r echo = FALSE, warning=FALSE, message=FALSE}
+library(kableExtra)
+dummy <- tibble(
+  Level = c("Notes re-reading", "Notes summarising", "Self-testing"),
+  D1 = c(1,0,0),
+  D2 = c(0,1,0)
+) 
+
+kable(dummy)%>%
+  kable_styling(., full_width = F)
+```
+
+If we make the third level, Self-testing, the reference, then our first dummy variable (D1, or method1 in the `lm` output) will be coding the difference between level 1 (notes re-reading) and level 3 (self-testing). Similarly, our second dummy (D2, or method2 in the `lm` output) will be coding the difference between level 2 (notes summarising) and level 3 (Self-testing).
+
+The last thing we need to remember is which means we substract from which. Remember, for each, we will subtract the reference group, from the group coded by the dummy variable. So...
+
+```{r}
+b_method1 <- g1 - g3
+b_method2 <- g2 - g3
+
+b_method1
+b_method2
+```
+
+So there we go...our guesses. Now let's check.
+
+# Make level 3 baseline
+```{r}
+contrasts(dum_dat$method) <- contr.treatment(3, base = 3)
+```
+
+# Run mod3
+```{r}
+mod3 <- lm(exam ~ method, data = dum_dat)
+summary(mod3)
+```
+
+And there we go! And just for completeness, note that the intercept is equal to the value of the group mean for self-testing, `r g3`.

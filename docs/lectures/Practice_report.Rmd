@@ -1,0 +1,125 @@
+---
+title: |
+  ![](dapr2.png){width=0.51in} <br>
+  RMS2  <br>
+  Formative (practice) Coursework report
+subtitle: "Department of Psychology, The University of Edinburgh"
+date: "Academic year 2020-2021"
+output:
+  html_document:
+    theme: flatly
+    toc: true
+---
+
+```{r setup, include=FALSE}
+####
+# Will default to not evaluate code chunks (so you can put rough solutions in here if that helps writing)
+
+# for things you want evaluated and included in the coursework instructions (e.g., plots, tables), just set eval=TRUE in the relevant chunk
+####
+knitr::opts_chunk$set(echo = FALSE, eval=FALSE, warning=FALSE, message=FALSE)
+```
+
+# Key Dates
+**Coursework set**: 17:00, Friday 23rd October 2020     
+**Coursework due**: 12noon, Thursday __12th November__ 2020   
+
+# Instructions  
+
+You need to produce a report answering the assignment questions detailed on the following pages. 
+You are provided with the description of a research project and an accompanying data set. Your task is to describe and analyse the data in order to provide answers to the research questions. Analyses will draw on the methodologies we have discussed in lectures and labs.  
+
+Try to write your report as if you are writing a paper, or your dissertation - i.e., write an analysis section and a results section.   
+
+The analyses section should detail the appropriate analyses you undertook and how they will provide answers to the research questions. The results section should present and discuss your findings, utilising graphics where necessary to illustrate your points. Analyses will draw on the methodologies we have discussed in lectures and labs.    
+
+__Please note that this is an individual assignment and you are expected to work on your own with respect to both R code and report.__
+
+## Grading
+
+This report will not be graded. Formative feedback will be provided.
+
+## Queries concerning the task  
+
+This document contains a basic overview of the task and of how to submit it. If you have any questions concerning the coursework report, we ask that you post them on the designated section of the on-line discussion board on Learn. If you have a question, it is likely your classmates may have the same question. Before posting a question, please check the on-line board in case it has already been answered.
+
+\pagebreak
+
+#### Helpful hints for writing reports:   
+
++ Important things that your report should clearly describe: 
+  + your decisions in cleaning the data
+  + your statistical approach to answering each question (in detail - for instance, explain model structures) 
+  + your results
+  + your interpretation of these results and how this answers the question.
++ A reader of your report should be able to more or less replicate your analyses **without** referring to your R code. 
+  
+## Report Formatting  
+  
++ Figures and tables should be numbered and captioned, and referred to in the text; important statistical outcomes should be summarised in the text.
++ Reporting should follow APA 7th Edition guidelines for the presentation of tables, figures, and statistical results. 
+<!-- Alternative style is acceptable so long as it is clear and consistent. -->
++ Your report should be a maximum of 6 sides of single-spaced A4 (including tables and figures), in a standard font, size 12, with normal 1 inch margins.  
+
+## Documents to submit
+
+You are required to submit two files, a complete report and an associated code file. There are two formats you can use.
+
+### Option 1: Rmarkdown
+If you choose to write your report using Rmarkdown, please submit the .rmd file and a compiled HTML.
+
+### Option 2: Word (or equivalent) and R script
+You may also submit a word file containing your report, and an associated R script containing all the code required to reproduce the analyses included in your report.
+
+## Submission instructions: Read carefully!
+
+Please submit both files on-line via the Turnitin link on the LEARN page for RMS2. The submission link will be within the Assessments tab and will become available after you click on the “Own work declaration” link.  
+  
+__Please include your exam number in your filename. For instance, *B123405.Rmd*__
+  
+Prior to submitting, check the following:  
+
++ Does it compile? 
++ Does the code run line-by-line without throwing any errors?  
+
+
+\pagebreak
+
+
+# Task
+
+A research team are interested improving driver safety. They are interested in how risky driving behaviour is influenced by characteristics of individuals and their interactions with environmental stimuli and substance use. One of the studies in the research project involves the relation between alcohol and marijuana use and risky behaviour.
+
+In this study, participants are randomly assigned to one of four conditions (control, low alcohol, high alcohol and marijuana; n=20). All participants were male, had been driving for between 3-5 years, drove on average for 10 hours per week (self-reported) and had never been convicted by the police for any driving offences. Participants were recruited evenly across two age groups (young 18-25) and old (50-60), with 10 young and 10 old participants in each of the experimental groups.
+
+Participants were asked to complete a 20 minute driving simulation in which various dangers and situations arise in which participants must make decisions on how to act quickly. The decisions participants make are scored based on the degree of risky behaviour they represent. 
+The research team have also measured a host of other variables, some demographic, some as focal covariates.
+
+The research team would like to answer the following questions:
+
+1. Are there differences in risky driving behaviour across experimental conditions?
+2. Do the differences (identified in 1) remain the same after controlling for weight and impulsivity?
+3. Does the effect of impulsivity on risking driving behaviour change as a function of age?
+
+Devise an analysis strategy based on the questions above and the data provided, complete the analysis, and write up the strategy, results and a short discussion following the guidelines in the next section.
+
+Using the data described in the table below and available (in **.csv** format) at [LINK](https://uoepsy.github.io/data/RMS2_data.csv), conduct, interpret and write up a set of analyses that answer the researcher’s research question. You can read the data into R direct from the following address "https://uoepsy.github.io/data/RMS2_data.csv" 
+
+```{r eval=TRUE, echo=FALSE}
+library(kableExtra)
+library(tidyverse)
+dict <- tibble(
+  variable = c("ID","drive","weight","impulsivity","age","condition"),
+  description = c("Unique participant identifier",
+                  "Driving risk taking score. Range: 0 to 100. Higher scores = increased risk taking",
+                  "Weight in kg's",
+                  "Z-score from self-report survey. Higher scores = higher impulsivity",
+                  "Ordered category: Young vs Old",
+                  "Experimental Condition: 0= control; 1 = low alcohol; 2 = high alcohol; 3 = marijuana")
+)
+knitr::kable(dict, "html") %>%
+  kableExtra::kable_styling(bootstrap_options = "striped")
+```
+
+
+

@@ -1,0 +1,359 @@
+---
+title: "Simple linear regression"
+subtitle: "RMS2 Sem 1, Week 1"
+author: "RMS2 team"
+date: "23 October 2020"
+output: html_document
+---
+
+
+# What are RMarkdown files?
+
+RMarkdown files (extension .Rmd) let you store in a single document
+
+- text
+- code
+- output from the code
+
+making it easier to generate reports and share your results with the wider community.
+
+If you were to use R scripts, instead, you could only include code in the file. All the output should then be copied and pasted into a word document to create a report.
+
+This document shows how to structure your solution to each week's exercises.
+
+Some notes:
+
+- Write bold words by wrapping them with two asterisks or underscores: **bold** or __bold__
+- Write italic words by wrapping them with one asterisk or underscore: *italic* or _italic_
+- Titles follow a hierarchical ordering specified by hashtags.
+
+
+# Exercises
+
+## Question 1
+
+The file name ends with .csv, meaning that the file is in comma separated value form. The function to read a CSV file into R is read_csv.
+
+Load the tidyverse library, required to read the data with read_csv and use data manipulation functions:
+```{r}
+library(tidyverse)
+```
+
+Read the data into R:
+```{r}
+riverview <- read_csv(file = "https://uoepsy.github.io/data/riverview.csv")
+```
+
+Check for reading errors by inspecting the first six rows of the data:
+```{r}
+head(riverview)
+```
+
+
+
+## Question 2
+
+Density curve and boxplot displaying the marginal distribution of employee incomes:
+```{r}
+ggplot(data = riverview, aes(x = income)) +
+  geom_density() +
+  geom_boxplot(width = 1/300) +
+  labs(x = "Income (in thousands of U.S. dollars)", 
+       y = "Probability density")
+```
+
+Summary statistics:
+```{r}
+riverview %>% 
+  summarize(
+    M = mean(income), 
+    SD = sd(income)
+    )
+```
+
+The marginal distribution of income is unimodal with a mean of approximately \$53,700. There is variation in employees' salaries (SD = \$14,553).
+
+
+
+## Question 3
+
+Density curve and boxplot displaying the marginal distribution of years of formal education:
+```{r}
+ggplot(data = riverview, aes(x = education)) +
+  geom_density() +
+  geom_boxplot(width = 1/100) +
+  labs(x = "Education (in years)", 
+       y = "Probability density")
+```
+
+Summary statistics:
+```{r}
+riverview %>%
+  summarize(
+    M = mean(education),
+    SD = sd(education)
+    )
+```
+
+The marginal distribution of education is unimodal with a mean of 16 years. There is variation in employees' level of education (SD = 4.4 years).
+
+
+
+## Question 4
+
+Scatterplot displaying the relationship between employees’ education level and income:
+```{r}
+ggplot(data = riverview, aes(x = education, y = income)) +
+  geom_point(alpha = 0.5) +
+  labs(x = "Education (in years)", 
+       y = "Income (in thousands of U.S. dollars)")
+```
+
+To comment on the strength of the linear association we compute the correlation coefficient:
+```{r}
+riverview %>%
+  select(education, income) %>%
+  cor()
+```
+
+There is a strong positive linear relationship between education level and income for the employees in the sample. High incomes tend to be observed, on average, with more years of formal education. The scatterplot does not highlight any outliers.
+
+
+
+## Question 5
+
+Fit a simple linear model having income as response variable and education as predictor. The model also include an intercept term, here it is explicitly mentioned by saying "1 +", but this is always included by default, so we can also avoid specifying it in the code:
+```{r}
+mdl <- lm(income ~ 1 + education, data = riverview)
+mdl
+```
+
+To write maths, wrap it with double dollar signs
+
+$$
+\widehat{Income} = 11.32 + 2.65 Education
+$$
+
+
+
+## Question 6
+
+```{r}
+mdl
+mdl$coefficients
+coef(mdl)
+coefficients(mdl)
+summary(mdl)
+```
+
+The estimated intercept is $\hat{\beta_0} = 11.32$ and the estimated slope is $\hat{\beta}_1 = 2.65$.
+
+
+## Question 7
+
+- Intercept: The estimated average income associated to zero years of formal education is $11,321.
+- Slope: The estimated increase in average income associated to a one year increase in education is $2,651.
+
+
+
+## Question 8
+
+```{r}
+betas <- coef(mdl)
+intercept <- betas[1]
+slope <- betas[2]
+ggplot(data = riverview, aes(x = education, y = income)) +
+  geom_point(alpha = 0.5) +
+  geom_abline(intercept = intercept, slope = slope, 
+              color = 'blue', size = 1) + 
+  labs(x = "Education (in years)", 
+       y = "Income (in thousands of U.S. dollars)")
+```
+
+
+
+## Question 9
+
+
+```{r}
+riverview_fitted <- riverview %>%
+  mutate(
+    income_hat = predict(mdl),
+    resid = income - income_hat
+  )
+head(riverview_fitted)
+```
+
+- $y_{3}$ = response variable for unit $i = 3$ in the sample data
+- $\hat y_{3}$ = fitted value for the third unit
+- $\hat \epsilon_{5} = y_{5} - \hat y_{5}$ = the residual corresponding to the 5th unit.
+
+
+## Question 10
+
+Calculate the test statistic:
+$$
+t = \frac{\hat \beta_1 - 0}{SE(\hat \beta_1)} = \frac{ 2.6513 - 0 }{0.3696} = 7.173
+$$
+
+
+Compare it with the 5\% critical value from a t-distribution with $n-2$ degrees of freedom, which is:
+```{r}
+n <- nrow(riverview)
+tstar <- qt(0.975, df = n - 2)
+tstar
+```
+
+As $|t|$ is much larger than $t^*$, we reject then null hypothesis as have strong evidence against it.
+
+The p-value, shown below, also confirms the conclusion:
+```{r}
+2 * (1 - pt(7.173, n - 2))
+```
+
+The same information was already contained in the row corresponding to the variable "education" in the output of `summary(mdl)`, which reported the t-statistic under `t value` and the p-value under `Pr(>|t|)`:
+```{r}
+summary(mdl)
+```
+
+We might report this as:
+
+We performed a t-test against the null hypothesis that education is not a significant predictor of income: $t(30) = 7.173,\ p < .001$, two-sided.
+The large t-statistic leads to a very small p-value, meaning that we have strong evidence against the null hypothesis.
+
+
+## Question 11
+
+In the riverview example, for 95\% confidence we have $t^* = 2.04$:
+```{r}
+n <- nrow(riverview)
+tstar <- qt(0.975, df = n - 2)
+tstar
+```
+
+The confidence interval is:
+```{r}
+beta1_ci <- tibble(
+  lower = 2.6513 - tstar * 0.3696,
+  upper = 2.6513 + tstar * 0.3696,
+)
+beta1_ci
+```
+
+In R it is easy to obtain the confidence intervals for the regression coefficients using the command `confint()`:
+```{r}
+confint(mdl, level = 0.95)
+```
+The result is exactly the same (up to rounding errors) as the previous one.
+
+
+CI for slope:
+
+For all Riverview city employees, each one-year difference in formal education is associated with a difference in income between \$1,896 and \$3,406, on average.
+
+
+## Question 12
+
+```{r}
+riverview_fitted <- riverview %>%
+  mutate(
+    income_hat = predict(mdl),
+    resid = income - income_hat
+  )
+head(riverview_fitted)
+riverview_fitted %>%
+  summarise(
+    SSModel = sum( (income_hat - mean(income))^2 ),
+    SSTotal = sum( (income - mean(income))^2 ),
+    RSquared = SSModel / SSTotal
+  )
+```
+
+Approximately 63\% of the total variability in employee incomes is explained by the linear association with education level.
+
+## Question 13
+
+```{r}
+df1 <- 1
+df2 <- nrow(riverview) - 2
+f_star <- qf(0.95, df1, df2)
+f_star
+```
+
+```{r}
+model_utility <- riverview_fitted %>%
+  summarise(
+    SSModel = sum( (income_hat - mean(income))^2 ),
+    SSResid = sum( resid^2 ),
+    MSModel = SSModel / 1,
+    MSResid = SSResid / df2,
+    FObs = MSModel / MSResid
+  )
+model_utility
+```
+
+We performed an F-test of model utility at the 5\% significance level, where $F(1,30) = 51.45$.
+
+As the observed $F = 51.45$ is much larger than the critical value $F^* = 4.17$, we have strong evidence to reject the null hypothesis that the model is ineffective.
+
+
+Alternatively, we can compute the p-value:
+```{r}
+pvalue <- 1 - pf(model_utility$FObs, df1, df2)
+pvalue
+```
+
+We performed an F-test of model utility at the 5\% significance level, where $F(1,30) = 51.45, p<.001$.
+
+The p-value (< .001) is much lower than the specified significance level, meaning that we have very strong evidence against  the null hypothesis.
+
+
+
+## Question 14
+
+Notes: I write in monospaced font by wrapping the sentence with backticks: this is an `example`.
+
+```{r}
+summary(mdl)
+```
+
+The relevant row is the following:
+
+`F-statistic: 51.45 on 1 and 30 DF,  p-value: 5.562e-08`
+
+
+```{r}
+anova(mdl)
+```
+
+The relevant entries are:
+
+- the `Df` column, which contains the degrees of freedom;
+- `F value = 51.452`, which is the F-statistic;
+- `Pr(>F) = 5.562e-08` = $5.562 \times 10^{-8}$, which is the p-value.
+
+
+We performed an F-test for the overall significance of the regression, $F(1, 30) = 51.45, p < .001$.
+The large F-statistic leads to a very small p-value ($<.001$), meaning that we have very strong evidence against the null hypothesis that the model is ineffective.
+
+In other words, the data provide strong evidence that education is an effective predictor of income.
+
+## Question 15
+
+```{r}
+51.452
+```
+
+```{r}
+7.173^2
+```
+
+The squared t-statistic is equal, up to rounding error, to the F-statistic.
+
+
+# Extra notes
+
+What if I want to write a sentence that uses a calculated value from a previous code chunk?
+You do that by writing backtick, r, space, the calculated value, and close backtick.
+
+The observed F statistic for testing model utility was `r round(model_utility$FObs, 3)`. The code will be replaced by the numerical value when you knit the document, so the sentence will be a proper sentence with a number rather than code.

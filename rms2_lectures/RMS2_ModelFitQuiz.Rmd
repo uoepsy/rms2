@@ -1,0 +1,172 @@
+---
+title: "<b>Quick Quiz</b>"
+subtitle: "<br><br> "
+author: ""
+institute: "Department of Psychology<br>The University of Edinburgh"
+date: "AY 2020-2021"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: xaringan-themer.css
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+```{r xaringan-themer, include = FALSE}
+library(xaringanthemer)
+style_mono_accent(
+  #base_color = "#0F4C81", # DAPR1
+   base_color = "#BF1932", # DAPR2
+  # base_color = "#88B04B", # DAPR3 
+  # base_color = "#FCBB06", # USMR
+  # base_color = "#a41ae4", # MSMR
+  header_color = "#000000",
+  header_font_google = google_font("Source Sans Pro"),
+  header_font_weight = 400,
+  text_font_google = google_font("Source Sans Pro", "400", "400i", "600", "600i"),
+  code_font_google = google_font("Source Code Pro")
+)
+```
+
+
+# Instructions
++ There will now be a small set of questions. 
+
+--
+
++ Pause the video to think about them and write your answers down. 
+
+--
+
++ The answers will be shown immediately afterwards.
+
+--
+
++ This is to check learning and is not assessed.
+
+---
+# Question 1
+
+```{r, warning=FALSE, message=FALSE, echo=FALSE}
+library(tidyverse)
+midus <- read_csv("MIDUS2.csv")
+midus2 <- midus %>%
+  select(1:4, 31:42) %>%
+  mutate(
+    PIL = rowMeans(.[grep("PIL", names(.))],na.rm=T)
+  ) %>%
+  select(1:4, 12:17) %>%
+  drop_na(.)
+```
+
++ Which model fits best?
+
+```{r}
+m0 <- lm(health ~ age + sex + O + C + E + A + N, data = midus2)
+m1 <- lm(health ~ age + sex + O + C + E + A + N + PIL, data = midus2)
+```
+
+.pull-left[
+```{r}
+AIC(m0, m1)
+```
+```{r}
+BIC(m0, m1)
+```
+]
+
+.pull-right[
+```{r}
+anova(m0, m1)
+```
+]
+
+
+---
+# Question 1: Answer
++ The models are nested.
++ Incremental F is significant
++ AIC for `m1` is smaller
++ BIC for `m1` is smaller and > 10
++ Model `m1` looks like the better model.
+
+---
+# Question 2
+
++ Which model fits best?
+
+```{r}
+m0 <- lm(health ~ age + E, data = midus2)
+m1 <- lm(health ~ age + E + sex, data = midus2)
+```
+
+.pull-left[
+```{r}
+AIC(m0, m1)
+```
+```{r}
+BIC(m0, m1)
+```
+]
+
+.pull-right[
+```{r}
+anova(m0, m1)
+```
+]
+
+---
+# Question 2: Answer
++ The models are nested.
++ Incremental F is not significant
++ AIC for `m1` is smaller
++ BIC for `m0` is smaller.
++ We have contrasting information, but overall it looks like `m0` is the better model.
+
+---
+# Question 3
+
++ Which model fits best?
+
+```{r}
+m0 <- lm(health ~ age + O + C, data = midus2)
+m1 <- lm(health ~ age + E + A + N, data = midus2)
+```
+
+.pull-left[
+```{r}
+AIC(m0, m1)
+```
+```{r}
+BIC(m0, m1)
+```
+]
+
+.pull-right[
+```{r}
+anova(m0, m1)
+```
+]
+
+---
+# Question 3: Answer
++ The models are non-nested.
++ Therefore you should have ignored the incremental F
++ AIC for `m1` is smaller
++ BIC for `m1` is smaller and > 10
++ Model `m1` looks like the better model.
+  
+---
+# The end.
+
++ If you are happy with your answers, move on to the next video/task.
+
++ If you are unclear on anything, either pop along to office hours, or post a question on the discussion board. 

@@ -1,0 +1,316 @@
+---
+title: "Repeated measures"
+bibliography: references.bib
+biblio-style: apalike
+link-citations: yes
+params: 
+    SHOW_SOLS: TRUE
+    TOGGLE: TRUE
+---
+
+
+```{r setup, include=FALSE}
+source('assets/setup.R')
+```
+
+```{r echo=FALSE}
+set.seed(3)
+```
+
+
+
+# Introduction
+
+In last week's exercises, we considered a data set where different amnesiac, Huntingtons, or control individuals were randomly assigned to one of three tasks (grammar, classification, or recognition).
+
+In such design, the observations were independent as they corresponded to different individuals.
+
+We also discussed that a more efficient design would have entailed asking all patients to perform all three tasks. However, in such case, the data would not be independent as the three scores corresponding to the same patient would clearly be correlated.
+
+
+__Repeated measures__ is a term used when the same entities make up multiple observations in a dataset. This might be data collected from participants across multiple conditions, trials, items, or timepoints.
+
+
+In today's lab we will analyse in more details data sets involving repeated measures on the same individuals, and use appropriate methods to draw conclusions from such data.
+
+Before we get started, make sure to install the `ez` package via
+```
+install.packages("ez")
+```
+
+
+
+# One-way design
+
+The data we're going to use is from a study of how driving speed is influenced by the music which is playing.
+
+Researchers conducted an experiment in which they tasked 30 participants with driving a section of motorway, while listening to 3 different genres of.
+Researchers measured the average speed at which participants drove for each song.
+
+:::frame
+__Things to think about:__
+
+Think about if you were designing this experiment. Think about things like making sure each song was the same length, the order of the songs for each participant, etc. You can control things like this in the experiment design, to save you having to do so in the analysis.
+:::
+
+The data involved the following variables:
+
+- `sub`: Participant ID (categorical)
+- `jazz`: Driving speed (mph) while listening to jazz (numeric)
+- `metal`: Driving speed (mph) while listening to metal (numeric)
+- `rap`: Driving speed (mph) while listening to rap (numeric)
+
+**Download link**
+
+[Download the data here](https://uoepsy.github.io/data/driving.csv) or by copying and pasting this link: https://uoepsy.github.io/data/driving.csv
+
+
+
+`r qbegin(1)`
+- Load the tidyverse library.
+- Read the data set into R, and call it `driving`.
+- Check that the data were correctly read into R, and make sure that variables are coded correctly (e.g., categorical variables should be factors)
+`r qend()`
+`r solbegin(show=params$SHOW_SOLS, toggle=params$TOGGLE)`
+```{r}
+library(tidyverse)
+
+driving <- read_csv("https://uoepsy.github.io/data/driving.csv")
+
+head(driving)
+```
+
+There seems to be a column with the row names. We don't need it, so we can either remove it:
+```{r eval=FALSE}
+driving <- driving %>%
+    select(-X1)
+```
+
+or transform the column to actual row names:
+```{r}
+driving <- driving %>% 
+    column_to_rownames(var = "X1")
+
+head(driving)
+```
+
+
+`r solend()`
+
+
+<br>
+
+The data are in the so-called **wide** format. The three columns named "jazz", "metal", and "rap", all contain numbers referring to the same quantity: driving speed.
+
+On the other hand, in a data set in **long** format, each column corresponds to a single variable.
+The following code converts the wide dataset to long format. As you can see, each column corresponds to a single variable. "sub" is the subject identifier, "genre" is the music genre, and "speed" is the driving speed.
+
+```{r}
+driving <- driving %>% 
+    pivot_longer(c(jazz, metal, rap), names_to = "genre", values_to = "speed")
+
+head(driving)
+```
+
+<br>
+
+
+
+`r qbegin(2)`
+__Descriptive statistics.__
+
+Check again whether or not all categorical variables are correctly encoded as factors.
+
+Find the mean, standard deviation, min, and max of the driving speeds for each genre of music.
+`r qend()`
+`r solbegin(show=params$SHOW_SOLS, toggle=params$TOGGLE)`
+Genre should be a factor but it is of type character. We can fix it:
+```{r}
+driving$genre <- as.factor(driving$genre)
+
+head(driving)
+```
+
+Let's compute the table of summary statistics:
+```{r}
+driving %>%
+    group_by(genre) %>%
+    summarise(
+        across(speed, .fns = list(M = mean, SD = sd, min = min, max = max))
+    )
+```
+
+`r solend()`
+
+
+`r qbegin(3)`
+**Relationship between the variables.**
+
+Create a boxplot displaying how the distribution of driving speed varies according to the music played.
+`r qend()`
+`r solbegin(show=params$SHOW_SOLS, toggle=params$TOGGLE)`
+```{r}
+ggplot(driving, aes(genre, speed, color = genre)) +
+    geom_boxplot()
+```
+`r solend()`
+
+
+We analyse data which contain multiple measurements from the same individual using the `ezANOVA()` function from the `ez` package.
+This function takes into account the correlation between measurements taken on the same individual. A standard `lm()` instead, would require an independence assumption which is clearly violated by study design.
+
+
+`r qbegin(4)`
+Run the following code and interpret the output:
+```{r}
+library(ez)
+
+mdl <- ezANOVA(data = driving, dv = speed, wid = sub, within = genre, 
+               detailed = TRUE, type = 3)
+mdl
+```
+
+Pay careful attention to the sphericity assumption. Remember, we want equal variance. A p-value for sphericity lower than the critical value indicates that we can reject the assumption that the variance of the differences between levels are equal.
+
+`r qend()`
+`r solbegin(show=params$SHOW_SOLS, toggle=params$TOGGLE)`
+:::int
+Mauchly's test indicated that the assumption of sphericity was not violated ($p = .222$). 
+The uncorrected (sphericity assumed) effect of genre of music on driving speed was statistically significant, $F(2,58) = 7.749$, $p = .001$.
+:::
+`r solend()`
+
+
+# Factorial design
+
+We're now going to do the same thing but with some other data. 
+This data is from a multi-domain cognitive screen tool, which was conducted on 50 participants at age 65, and then again at ages 75 and 85. Scores on the screening tool can range from 0 to 100.
+
+
+The measured variables are:
+
+- `sub`: Participant ID (categorical)
+- `bilingualism`: Whether the participants was bilingual or not (categorical, bilingual or not bilingual)
+- `age`: Participant's age when the test was taken (3 groups, can be considered categorical)
+- `score`:  Score on a cognitive test (numeric)
+
+
+**Download link**
+
+[Download the data here](https://uoepsy.github.io/data/cog.csv) or by copying and pasting this link: https://uoepsy.github.io/data/cog.csv
+
+
+`r qbegin(5)`
+Read the data set into R, and call it `cog`.
+
+Make sure that categorical variables are correctly encoded as factors.
+`r qend()`
+`r solbegin(show=params$SHOW_SOLS, toggle=params$TOGGLE)`
+```{r}
+cog <- read_csv('https://uoepsy.github.io/data/cog.csv')
+head(cog)
+
+cog <- cog %>%
+    mutate(age = as.factor(age),
+           bilingualism = as.factor(bilingualism))
+head(cog)
+```
+`r solend()`
+
+
+`r qbegin(6)`
+How is this study design related to "repeated measures"?
+
+a. data is collected from participants in multiple conditions
+b. data is collected from participants on multiple trials
+c. data is collected from participants at multiple time points.
+`r qend()`
+`r solbegin(show=params$SHOW_SOLS, toggle=params$TOGGLE)`
+The correct answer is (c).
+
+For each subject, we have data collected over time, at multiple timpoints: age = 65, 75, and 85.
+`r solend()`
+
+
+
+`r qbegin(7)`
+Create a boxplot of scores by age and whether the subject was bilingual or not.
+
+Create an interaction plot using the `stat_summary()` function.
+`r qend()`
+`r solbegin(show=params$SHOW_SOLS, toggle=params$TOGGLE)`
+```{r}
+ggplot(data = cog, aes(x = age, y = score, color = bilingualism)) +
+    geom_boxplot() + 
+    labs(x = "Participant's age", y = "Score", color = "Bilingualism",
+         title = "Scores on a multi-domain cognitive screening by age and bilingualism")
+```
+
+```{r}
+cog_stats <- cog %>%
+    group_by(age, bilingualism) %>%
+    summarise(M = mean(score),
+              SE = sd(score) / sqrt(n()),
+              LWR = M - SE,
+              UPR = M + SE)
+
+ggplot(data = cog_stats, aes(x = age, y = M, color = bilingualism)) +
+    geom_pointrange(aes(ymin = LWR, ymax = UPR)) + 
+    geom_line(aes(x = as.numeric(age)))  +
+    labs(x = "Participant's age", y = "Score", color = "Bilingualism")
+```
+
+
+
+`r solend()`
+
+
+<br>
+
+The following code runs a factorial repeated measures ANOVA with a withing subject factor (`age`) and a between subject factor (`bilingualism`):
+```{r}
+mdl2 <- ezANOVA(cog, dv = score, between = bilingualism, wid = sub, within = age, 
+                detailed = TRUE, type = 3)
+mdl2
+```
+
+The uncorrected (sphericity assumed) effect of age on test scores is statistically significant, $F(2,96)=51.63, p<.001$.
+However, Mauchly's test has a p-value < .001. This indicates that the variances of differences between the different within-subject conditions aren't equal (this is the variances of differences between different ages). 
+
+One thing we can do is apply a correction to the p-value. 
+
+Fortunately, `ezANOVA` has already done this for us - it provides two: the Greenhouse-Geisser and Huynh-Fieldt corrections. 
+
+These corrections are applied to the denominator degrees of freedom of the F-ratio (the `Dfd` column of the ANOVA output), which in turn changes the p-value. 
+All you have to do is multiply the degrees of freedom (for age above, this is 96) by the correction (the `GGe` and `HFe` values), and report the corrected p-values (`p[GG]` and `p[HFe]`), like so:
+
+The Greenhouse-Geisser corrected effect of age on test scores was significant, $F(2,67.58) = 51.63, p<.001$.
+
+The Huynh-Fieldt corrected effect of age on test scores was significant, $F(2,69.02) = 51.63, p < .001$.
+
+The repeated measures ANOVA gives us one way of accommodating for this in our analysis. However, it has quite strict assumptions (for instance, the sphericity assumption which was violated above).
+
+<br>
+
+`r qbegin(8)`
+Provide similar interpretation on whether bilingualism and the interaction between age and bilingualism impact scores on a multi-domain cognitive screening test?
+`r qend()`
+`r solbegin(show=params$SHOW_SOLS, toggle=params$TOGGLE)`
+
+The uncorrected (sphericity assumed) effect of bilingualism on test scores is not statistically significant, $F(1, 48) = 2.31, p = .135$.
+
+The uncorrected (sphericity assumed) effect of the interaction between age and bilingualism on test scores is statistically significant, $F(2, 96) = 4.75, p = .011$.
+
+However, Mauchly's test has a p-value < .001. This indicates that the variances aren't equal across the different combinations of bilingualism and age. 
+
+The Greenhouse-Geisser corrected effect of the interaction between bilingualism and age on test scores was significant, $F(2, 67.58) = 4.75, p = .021$.
+
+The Huynh-Fieldt corrected effect of the interaction between bilingualism and age on test scores was significant, $F(2,69.02) = 4.75, p = .021$.
+
+`r solend()`
+
+
+
+<!-- Formatting -->
+
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;"></div>

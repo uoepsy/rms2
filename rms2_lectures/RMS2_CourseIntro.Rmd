@@ -1,0 +1,230 @@
+---
+title: "<b>Course Introduction </b>"
+subtitle: "RMS2<br><br> "
+author: "STATS TEAM"
+institute: "Department of Psychology<br>The University of Edinburgh"
+date: "AY 2020-2021"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: xaringan-themer.css
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+```{r xaringan-themer, include = FALSE}
+library(xaringanthemer)
+style_mono_accent(
+  #  base_color = "#0F4C81", # DAPR1
+   base_color = "#BF1932", # DAPR2
+  # base_color = "#88B04B", # DAPR3 
+  # base_color = "#FCBB06", # USMR
+  # base_color = "#a41ae4", # MSMR
+  header_color = "#000000",
+  header_font_google = google_font("Source Sans Pro"),
+  header_font_weight = 400,
+  text_font_google = google_font("Source Sans Pro", "400", "400i", "600", "600i"),
+  code_font_google = google_font("Source Code Pro")
+)
+
+library(tidyverse)
+```
+
+
+```{r welcome, echo=FALSE}
+cohort <- 2019
+team <- c("Tom", "Anastasia", "Emma" , "Esperanza", 
+          "Carolane", "Catherine", "Abby", "Svenja",
+          "Yangzi", "Diana")
+lecture_hours <- 10+10+50
+lab_hours <- 20+20
+```
+
+# In this intro...
++ The RMS2 team
+
+--
+
++ What each week will look like.
+
+--
+
++ Expectations
+
+
+---
+# The Team
++ Tom Booth (CO)
++ Alex Doumas
++ Alex Weiss
++ Jo King
++ Umberto Noe
++ Aja Murray
++ Wonderful tutors (lots)
+
+---
+# RMS2 
++ In RMS2, we will teach you how to...
+
+--
+
+  + Run and interpret linear models for observational and experimental designs
+
+--
+
+  + Run and interpret repeated measures designs
+  
+--
+
+  + Run and interpret factor analysis and principal components analysis
+
+
+---
+# Learning Outcomes
+1. Understand multiple regression for continuous outcomes including interactions, interpretation, model assumptions, and when models should be applied.
+
+2. Understand the relationship between ANOVA and regression under the general linear model and be able to implement basic coding schemes for categorical predictors.
+
+3. Understand the principles of scale construction and data reduction methods including interpretation, model assumptions and methods to assess them.
+
+4. Use R to practically conduct the analytic methods taught in the course.
+
+5. Present and interpret the results of the analytic methods taught in the course.
+
+
+---
+# Who you are...
+
++ Psychology Y3 students
+
+--
+
++ Psychology Y4 students who were abroad in 19-20
+
+--
+
++ Intercalating medics
+
+--
+
++ Perhaps some visitors from overseas
+
+--
+
++ And there are a lot of you!
+
+
+
+---
+# The Structure
++ We are on-line, so this will look a little different to normal.
+
+--
+
++ **Lectures**
+  + Equivalent of ~2hr of live lecture, broken into shorter chunks
+  + The chunks will be linked with tasks.
+  + Some weeks additional background and recap material will also be provided.
+
++ **Independent study labs**
+  + Structured reading and exercises with R
+  + Equivalent of ~2-3 hrs per week
+  
+--
+
++ **Supported by**
+  + In person on-line office hours (see LEARN for times)
+  + Discussion boards
+
+???
++ Requires you to work steadily and consistently across the year. 
++ It builds, and it is hard to cram.
++ To help you build this study skills, course has a specific assessment structure.
+
+
+---
+# The Assessment 
++ **Weekly quizzes** (25%)
+  + 10 quizzes in total 
+  + Quiz 1 is a practices.
+  + The rest comprise your grade.
+  + Mark is the average of your best 7/9 scores.
+
+--
+
++ **Coursework report** (75%)
+  + Provided a dataset and some questions
+  + Task is to construct models to answer the questions, describe them, run them, report the results.
+  + Will require use of multiple approaches from class
+
+???
+Key point to make is the little and often principle
+
+---
+# Materials
++ All of your materials for each week will be within the weekly folders on LEARN.
+
+--
+
++ It will contain:
+  + A playlist of recordings
+  + Slide decks
+  + Links to lab material
+  + Links to the weekly quizzes
+  + Any comments or specific instructions for the week
+  + Links to discussion boards
+  + Reading (all freely available online)
+
+--
+
++ The weekly folders will become available incrementally.
+
+---
+# What you can expect from us
+1. We will work hard to help you learn.
+
+2. We will be open and communicate with you.
+
+3. We will be polite, respectful and treat you like adults.
+
+
+---
+# What we expect of you
+1. You work hard.
+
+2. That you talk to me and the teaching team.
+
+3. That you are polite, and respect the teaching team and your classmates.
+
+4. Try and have fun.
+
+
+---
+# A brief word on engagement
++ It is going to be a different year for everyone
+
+--
+
++ We are very keen to make sure everyone succeeds. 
+
+--
+
++ To do that, we need to know when people are struggling. 
+
+--
+
++ We will keep an eye on this in a number of ways:
+  + Presence in OH
+  + Engagement with material (watching recordings, discussion boards etc.)
+  + Weekly quiz performance.
+  
+---
+class: center, middle
+# And that is it for this intro!

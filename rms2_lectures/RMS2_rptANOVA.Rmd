@@ -1,0 +1,242 @@
+---
+title: "Repeated-measures using ezANOVA"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: '3'
+  html_notebook:
+    code_folding: show
+    theme: flatly
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+---
+
+## Data structure
+For simplicity, we are going to simulate some data from different designs. The beauty of doing this for learning is that we know exactly what to expect as output from the analyses. You do not need to focus on the code used to simulate the data, but it is here if you would like to look it over. This is a very simple simulation.
+
+Here we will simulate two data sets: 
+
+- One for a one-way repeated measures design with three levels (time points, repeated groups). 
+- One for a mixed design with a 3-level within factor and a 2 level between factor.
+
+In lab, you will look at some more examples. In this document, we will use largely base R. In lab, we will show the largely the same steps using `tidyverse`
+
+### Data: One-way repeated measure
+OK, let's create some data with 40 participants per condition. 
+
+```{r}
+Subjects1 <- factor(c(rep(seq(1,40),each=3)))
+DV1 <- rnorm(120,c(25,35,50),sd=2.5)
+IVW1 <- factor(rep(c("level1","level2", "level3"),each=1,40))
+within <- data.frame(Subjects1, DV1, IVW1)
+
+head(within)
+```
+
+
+# Analysis: One-way Repeated Measure
+
+```{r, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(ez)
+library(kableExtra)
+library(psych)
+```
+
+## Describe
+It is always sensible to describe and visualize your data.
+
+```{r}
+res1 <- describeBy(within$DV1, group = within$IVW1)[[1]]
+res2 <- describeBy(within$DV1, group = within$IVW1)[[2]]
+res3 <- describeBy(within$DV1, group = within$IVW1)[[3]]
+
+res <- rbind(res1[2:4],res2[2:4],res3[2:4])
+rownames(res) <- c("Level1", "Level2", "Level3")
+
+kable(res) %>%
+  kable_styling("striped")
+```
+
+Good, those group means are what we expected. So now let's plot it:
+
+```{r}
+boxplot(DV1~IVW1, data = within)
+```
+
+
+## Run models
+Now let's run the model in `ezANOVA()`. First, lets look at the key arguments, and then we can add our data to it:
+
+```{r, eval=FALSE}
+ezANOVA(data = ,            # Name your data set
+       dv = ,               # Name outcome 
+       wid = ,              # Name ID variable
+       within=,             # Name within person predictors
+       within_covariates =, # Name within person covs
+       between = ,          # Name between person predictors
+       between_covariates =,# Name between person covs
+       detailed=TRUE,       # Output option
+       type=3               # Which SS to use? (see next recording chunk)
+       )
+```
+
+
+So lets run our actual analysis:
+
+```{r}
+resWithin <- ezANOVA(data = within,  
+                    dv = DV1, 
+                    wid = Subjects1, 
+                    within=IVW1, 
+                    detailed=TRUE, type=3)
+resWithin$ANOVA
+```
+
+While we are working with a smaller example, let's calculate the MS and reproduce the F value. We will use [] to call values from the table above:
+
+```{r}
+(resWithin$ANOVA[2,4]/resWithin$ANOVA[2,2]) / (resWithin$ANOVA[2,5]/resWithin$ANOVA[2,3])
+```
+
+```{r}
+# Why don't you download and have a go at doing the same thing as above for the intercept
+# (we do not normally do this, but it is useful R practice)
+
+
+
+```
+
+
+As we might expect, we are able to reject the null in our example (unsurprising as we simulated a difference). We can see from the boxplots that our outcome scores increase across the levels of the factor. We can check the Sphericity assumption easily with `ezANOVA`:
+
+```{r}
+resWithin$`Mauchly's Test for Sphericity`
+```
+
+Remember test statistic (W) = 1 under the null. Our test statistic is very close to 1, and so as we might expect the *p*-value suggests we would fail to reject the null, meaning the assumption is met.
+
+But what would we do if this test was significant? Thankfully `ezANOVA` looks after that for us as well:
+
+```{r}
+resWithin$`Sphericity Corrections`
+```
+
+- `Effect` = which factor result is in the row. Here we just have the one.
+- `GGe` = Is the Greenhouse-Geisser epsilon value
+- `p[GG]` = the *p*-value after correction
+- `p[GG]<.05` = indication of hypothesis test with $\alpha = 0.05$
+- `HFe` = Huynh-Feldt epsilon
+- `p[HF]` = the *p*-value after correction
+- `p[HF]<.05` = indication of hypothesis test with $\alpha = 0.05$
+
+We can also look at the distributions of the outcome by level.
+
+```{r}
+par(mfrow=c(2,2))
+
+hist(within$DV1[within$IVW1=="level1"], 
+     xlab = "DV", 
+     main = "Histogram of DV within level 1 of IVW1")
+
+hist(within$DV1[within$IVW1=="level2"], 
+     xlab = "DV", 
+     main = "Histogram of DV within level 2 of IVW1")
+
+hist(within$DV1[within$IVW1=="level3"], 
+     xlab = "DV", 
+     main = "Histogram of DV within level 3 of IVW1")
+```
+
+
+# Analysis: Mixed Design
+
+## Mixed design data
+
+We will follow a similar process to simulate some very simple data.
+
+```{r}
+Subjects2 <- factor(c(rep(seq(1,40),each=3)))
+DV2 <- rnorm(120,c(25,35,50, 40, 25, 10),sd=2.5)
+IVW2 <- rep(c("level1","level2", "level3"),each=1,40)
+IVB2 <- rep(c("level1","level2"),each=3,40)
+mixed <- data.frame(Subjects2, DV2, IVW2, IVB2)
+
+head(mixed)
+```
+
+## Describing and visualizing
+We have a slightly more complicated data set to visualize now. So I am going to show how we might work with basic boxplot. **Note, this is where ggplot comes into its own (see lab)**
+
+Basic boxplot
+
+```{r}
+boxplot(DV2 ~ IVW2:IVB2, data = mixed)
+```
+
+OK, we have 6 groups, and so have 6 boxes. But the current colours and labels are not especially useful. Boxplot is crossing each level of the first factor (our within person factor), with each level of the second (our between person factor).
+
+It would make the visualization better to see the pairings the other way round, so we see the values for the between factor side by side. Think about an example like 2 groups over time. 
+
+To do this, we need to change the variables in the formula:
+
+```{r}
+boxplot(DV2 ~ IVB2:IVW2, data = mixed)
+```
+
+
+OK, better. Now let's think about the x-axis labels.None of them are very useful. We can change the tick mark labels using `names`. 
+
+```{r}
+boxplot(DV2 ~ IVB2:IVW2, 
+        names = c("w1b1", "w1b2", "w2b1", "w2b2", "w3b1", "w3b2"),
+        xlab = "Groups",
+        data = mixed)
+```
+
+Now we can make it look a bit nicer on the eye. If we colour the between group levels the same we could see their movement over the within person factor.
+
+
+```{r}
+boxplot(DV2 ~ IVB2:IVW2, 
+        names = c("w1b1", "w1b2", "w2b1", "w2b2", "w3b1", "w3b2"),
+        xlab = "Groups",
+        col = (c("red", "blue")),
+        data = mixed)
+```
+
+`col` will repeat the list it is given until it runs our of groups. So here, it is repeating the pattern red/blue 3 times. This is a better plot. We can now see that n level 1 of the between factor, the outcome scores increase, and in level 2 of the between factor, they decrease, across levels of the within group factor.
+
+So now we can see that we may well have an interaction.
+
+## Analysis
+Remember we have one repeating within person factor with three levels, and one between person factor with two levels. Half the participants are in level 1 of the between person factor, half in level 2.
+
+```{r, warning=FALSE}
+resMixed <- ezANOVA(data = mixed, 
+                    dv = DV2, 
+                    wid = Subjects2, 
+                    within=IVW2,
+                    between = IVB2,
+                    detailed=TRUE, type=3)
+resMixed$ANOVA
+```
+
+
+
+```{r}
+resMixed$`Mauchly's Test for Sphericity`
+```
+
+
+
+
+
+```{r}
+resMixed$`Sphericity Corrections`
+```
+
+
+

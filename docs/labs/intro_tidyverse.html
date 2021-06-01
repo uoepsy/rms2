@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Introduction to tidyverse</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<script>
+function toggle_visibility(id1, id2) {
+var e = document.getElementById(id1);
+var f = document.getElementById(id2);
+e.style.display = ((e.style.display!='none') ? 'none' : 'block');
+if(f.classList.contains('fa-plus')) {
+    f.classList.add('fa-minus')
+    f.classList.remove('fa-plus')
+} else {
+    f.classList.add('fa-plus')
+    f.classList.remove('fa-minus')
+}
+}
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="assets/style-labs.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"><strong>RMS2</strong></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="intro_tidyverse.html">RMS2 starts here</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Regression models
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="01_slr.html">1/1: Simple linear regression</a>
+    </li>
+    <li>
+      <a href="02_mlr.html">1/2: Multiple regression basics</a>
+    </li>
+    <li>
+      <a href="03_mlr_int.html">1/3: Interactions</a>
+    </li>
+    <li>
+      <a href="04_mlr_assumpt.html">1/4: Assumptions and diagnostics</a>
+    </li>
+    <li>
+      <a href="05_mlr_eval.html">1/5: Model fit, model comparison, and model selection</a>
+    </li>
+    <li class="dropdown-header">1/6: Break week</li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Models for experimental data
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="07_anova.html">1/7: ANOVA and contrasts</a>
+    </li>
+    <li>
+      <a href="08_factorial_anova.html">1/8: Factorial ANOVA</a>
+    </li>
+    <li>
+      <a href="09_repeated_measures.html">1/9: Repeated measures</a>
+    </li>
+    <li>
+      <a href="10_surveys_pca.html">1/10: Surveys and  PCA</a>
+    </li>
+    <li>
+      <a href="11_fa.html">1/11: Exploratory factor analysis</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Extra
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="intro_r_rstudio.html">Getting started with R &amp; RStudio</a>
+    </li>
+    <li>
+      <a href="extra_writeup.html">Example Write-up</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Introduction to tidyverse</h1>
+
+</div>
+
+
+<div class="lo">
+<p><strong>LEARNING OBJECTIVES</strong></p>
+<ol style="list-style-type: decimal">
+<li>Understand what is tidyverse and why it is used</li>
+<li>Understand the link between data frames and tibbles</li>
+<li>Be able to read data into tibbles and manipulate them</li>
+<li>Be able to create grammar-of-graphics plots</li>
+</ol>
+</div>
+<div id="what-is-tidyverse" class="section level1">
+<h1>What is tidyverse?</h1>
+<p>If you took RMS1, you are already familiar with data and data frames.
+If not, a data frame is a data structure used to store data organised in rows and columns.</p>
+<p>Each row corresponds to an <em>observational unit</em> or <em>case.</em> Each column represents a <em>variable</em>, obtained by recording a particular attribute of the cases.</p>
+<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-1"></span>
+<img src="images/dataframe.png" alt="Illustration of a data frame structure." width="90%" />
+<p class="caption">
+Figure 1: Illustration of a data frame structure.
+</p>
+</div>
+<p>The variables need not be all of the same type. Some could be numeric, other categorical.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> However, the main features of a data set are two:</p>
+<ol style="list-style-type: decimal">
+<li>The columns need to all have the same length, i.e. the same number of cases;</li>
+<li>Each column should have values of the same type.</li>
+</ol>
+<p>Point (1) makes sure that we know who each value refers to. Each row in the data frame should refer to the same case or individual.
+Point (2), instead, means that you can not have Age = 53, “Apricot”, 20, “Kiwi”. This would make it confusing, and perhaps “Apricot” and “Kiwi” refer to the favourite fruit of each individual.</p>
+<p>In RMS1 you worked with the <code>data.frame()</code> function, used <code>$</code> to select columns, and <code>[rows, columns]</code> for indexing.</p>
+<p>As data becomes messier and bigger, some R users created a new data frame, called <strong>tibble</strong>, that comes with handy features such as pretty printing, automatic display of dimensions (# of rows and # of columns), and also automatic display of the type of each variable under its name.</p>
+<p>The work has then been extended to create many useful functions that let you easily subset, transform, and work with tibbles/data frames.
+All of these new functions have been made available via many packages. However, instead of loading each package separately, RStudio has created a “bundle” package that loads them all at once for us: the <strong>tidyverse</strong>.</p>
+</div>
+<div id="getting-started" class="section level1">
+<h1>Getting started</h1>
+<p>Before using the functions provided by the tidyverse library, we need to install it.</p>
+<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-2"></span>
+<img src="https://pbs.twimg.com/media/EVIZRvPU0AAwgdH?format=jpg&name=900x900" alt="Source: https://twitter.com/visnut/status/1248087845589274624" width="90%" />
+<p class="caption">
+Figure 2: Source: <a href="https://twitter.com/visnut/status/1248087845589274624" class="uri">https://twitter.com/visnut/status/1248087845589274624</a>
+</p>
+</div>
+<p>Run, once for all, the following code to install the tidyverse library:</p>
+<pre class="r"><code>install.packages(&#39;tidyverse&#39;)</code></pre>
+<p>Once installed, load it via</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<p>Some messages will appear into the R console, but these are not worrying.</p>
+</div>
+<div id="the-pipe-operator" class="section level1">
+<h1>The pipe operator</h1>
+<p>The tidyverse package provides the function <code>%&gt;%</code>, called the <strong>pipe function</strong>, which comes from the tidyverse sub-package <code>magrittr</code> and is automatically imported when you do <code>library(tidyverse)</code>.</p>
+<p><img src="images/magrittr_pipe.jpeg" width="70%" style="display: block; margin: auto;" /></p>
+<p>The pipe function makes it easier to write lengthy code in a natural left-to-right reading style.</p>
+<p>Consider this code chunk:</p>
+<pre class="r"><code>head(round(log(1:10), 2))</code></pre>
+<pre><code>## [1] 0.00 0.69 1.10 1.39 1.61 1.79</code></pre>
+<p>and the following equivalent one:</p>
+<pre class="r"><code>1:10 %&gt;%
+  log() %&gt;%
+  round(digits = 2) %&gt;%
+  head()</code></pre>
+<pre><code>## [1] 0.00 0.69 1.10 1.39 1.61 1.79</code></pre>
+<p>The pipe operator, <code>%&gt;%</code>, simply takes the result of the operation on its left, and puts it into the first argument of the function to its right.</p>
+<p>The first <code>%&gt;%</code> takes the output of <code>1:10</code> and plugs it into <code>log()</code>. The second pipe takes the output of <code>log()</code> and plugs it into the first position (indicated by a dot) of <code>round(., digits = 2)</code>. The final pipe takes the output of <code>round(., digits = 2)</code> and plugs it into <code>head()</code>, returning only the first six elements out of the ten provided.</p>
+</div>
+<div id="data" class="section level1">
+<h1>Data</h1>
+<p>We will be working with data collected by the <a href="http://happyplanetindex.org/">Happy Planet Index website</a>, which maintains a ranking of global countries by their index of sustainable wellbeing.
+This index is computed from different variables such as wellbeing, life expectancy, inequality, and ecological footprint.</p>
+<div class="optional-begin">
+Data: HappyPlanet.csv<span id="opt-start-137" class="fa fa-plus optional-icon clickable" onclick="toggle_visibility(&#39;opt-body-137&#39;, &#39;opt-start-137&#39;)"></span>
+</div>
+<div id="opt-body-137" class="optional-body" style="display: none;">
+<p><strong>Download link</strong></p>
+<p><a href="https://uoepsy.github.io/data/HappyPlanet.csv">Download the data here</a></p>
+<p><strong>Description</strong></p>
+<p>This dataset was assembled by <a href="https://happyplanetindex.org">The Happy Planet Index website</a> using data from a global survey that asked respondents questions about how they feel their lives are going. It documents the health and wellbeing of the inhabitants of various nations around the world alongside each nation’s sustainability policies.</p>
+<p><strong>Preview</strong></p>
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#knrsauujvn .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#knrsauujvn .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#knrsauujvn .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#knrsauujvn .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#knrsauujvn .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#knrsauujvn .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#knrsauujvn .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#knrsauujvn .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#knrsauujvn .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#knrsauujvn .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#knrsauujvn .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#knrsauujvn .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#knrsauujvn .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#knrsauujvn .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#knrsauujvn .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#knrsauujvn .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#knrsauujvn .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#knrsauujvn .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#knrsauujvn .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#knrsauujvn .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#knrsauujvn .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#knrsauujvn .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#knrsauujvn .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#knrsauujvn .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#knrsauujvn .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#knrsauujvn .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#knrsauujvn .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#knrsauujvn .gt_left {
+  text-align: left;
+}
+
+#knrsauujvn .gt_center {
+  text-align: center;
+}
+
+#knrsauujvn .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#knrsauujvn .gt_font_normal {
+  font-weight: normal;
+}
+
+#knrsauujvn .gt_font_bold {
+  font-weight: bold;
+}
+
+#knrsauujvn .gt_font_italic {
+  font-style: italic;
+}
+
+#knrsauujvn .gt_super {
+  font-size: 65%;
+}
+
+#knrsauujvn .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="knrsauujvn" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">country</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">region</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">life_expectancy</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">wellbeing</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">happy_life_years</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">footprint</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">inequality_of_outcomes</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">inequality_adjusted_life_expectancy</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">inequality_adjusted_wellbeing</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">happy_planet_index</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">gdp_per_capita</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">population</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">gini_index</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">hpi_rank</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_left">Afghanistan</td>
+      <td class="gt_row gt_left">Middle East and North Africa</td>
+      <td class="gt_row gt_right">59.668</td>
+      <td class="gt_row gt_right">3.8</td>
+      <td class="gt_row gt_right">12.39602</td>
+      <td class="gt_row gt_right">0.79</td>
+      <td class="gt_row gt_right">0.42655744</td>
+      <td class="gt_row gt_right">38.34882</td>
+      <td class="gt_row gt_right">3.390494</td>
+      <td class="gt_row gt_right">20.22535</td>
+      <td class="gt_row gt_right">690.8426</td>
+      <td class="gt_row gt_right">29726803</td>
+      <td class="gt_row gt_left">Data unavailable</td>
+      <td class="gt_row gt_right">110</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Albania</td>
+      <td class="gt_row gt_left">Post-communist</td>
+      <td class="gt_row gt_right">77.347</td>
+      <td class="gt_row gt_right">5.5</td>
+      <td class="gt_row gt_right">34.41474</td>
+      <td class="gt_row gt_right">2.21</td>
+      <td class="gt_row gt_right">0.16513372</td>
+      <td class="gt_row gt_right">69.67116</td>
+      <td class="gt_row gt_right">5.097650</td>
+      <td class="gt_row gt_right">36.76687</td>
+      <td class="gt_row gt_right">4247.4854</td>
+      <td class="gt_row gt_right">2900489</td>
+      <td class="gt_row gt_left">28.96</td>
+      <td class="gt_row gt_right">13</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Algeria</td>
+      <td class="gt_row gt_left">Middle East and North Africa</td>
+      <td class="gt_row gt_right">74.313</td>
+      <td class="gt_row gt_right">5.6</td>
+      <td class="gt_row gt_right">30.46946</td>
+      <td class="gt_row gt_right">2.12</td>
+      <td class="gt_row gt_right">0.24486175</td>
+      <td class="gt_row gt_right">60.47454</td>
+      <td class="gt_row gt_right">5.196449</td>
+      <td class="gt_row gt_right">33.30054</td>
+      <td class="gt_row gt_right">5583.6162</td>
+      <td class="gt_row gt_right">37439427</td>
+      <td class="gt_row gt_left">Data unavailable</td>
+      <td class="gt_row gt_right">30</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Argentina</td>
+      <td class="gt_row gt_left">Americas</td>
+      <td class="gt_row gt_right">75.927</td>
+      <td class="gt_row gt_right">6.5</td>
+      <td class="gt_row gt_right">40.16667</td>
+      <td class="gt_row gt_right">3.14</td>
+      <td class="gt_row gt_right">0.16423830</td>
+      <td class="gt_row gt_right">68.34958</td>
+      <td class="gt_row gt_right">6.034707</td>
+      <td class="gt_row gt_right">35.19024</td>
+      <td class="gt_row gt_right">14357.4116</td>
+      <td class="gt_row gt_right">42095224</td>
+      <td class="gt_row gt_left">42.49</td>
+      <td class="gt_row gt_right">19</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Armenia</td>
+      <td class="gt_row gt_left">Post-communist</td>
+      <td class="gt_row gt_right">74.446</td>
+      <td class="gt_row gt_right">4.3</td>
+      <td class="gt_row gt_right">24.01876</td>
+      <td class="gt_row gt_right">2.23</td>
+      <td class="gt_row gt_right">0.21664810</td>
+      <td class="gt_row gt_right">66.92168</td>
+      <td class="gt_row gt_right">3.747140</td>
+      <td class="gt_row gt_right">25.66642</td>
+      <td class="gt_row gt_right">3565.5176</td>
+      <td class="gt_row gt_right">2978339</td>
+      <td class="gt_row gt_left">30.48</td>
+      <td class="gt_row gt_right">73</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">Australia</td>
+      <td class="gt_row gt_left">Asia Pacific</td>
+      <td class="gt_row gt_right">82.052</td>
+      <td class="gt_row gt_right">7.2</td>
+      <td class="gt_row gt_right">53.06950</td>
+      <td class="gt_row gt_right">9.31</td>
+      <td class="gt_row gt_right">0.08067825</td>
+      <td class="gt_row gt_right">78.56002</td>
+      <td class="gt_row gt_right">6.913335</td>
+      <td class="gt_row gt_right">21.22897</td>
+      <td class="gt_row gt_right">67646.1039</td>
+      <td class="gt_row gt_right">22728254</td>
+      <td class="gt_row gt_left">Data unavailable</td>
+      <td class="gt_row gt_right">105</td>
+    </tr>
+  </tbody>
+  
+  
+</table></div>
+</div>
+<p class="optional-end">
+</p>
+<p>The tidyverse equivalent of a data frame is a <strong>tibble.</strong>
+If you read data into R using functions from the tidyverse packages, a tibble is automatically created.
+If, instead, you create the data yourself or use an older function such as <code>read.table()</code>, you need to use either <code>tibble()</code> or <code>as_tibble()</code> to convert it to a tibble.</p>
+<p>To load the data file into R, we first need to check what type of data file it is.
+If you downloaded the data, you will see that the file is called ‘HappyPlanet.csv’, meaning that the file is in comma separated values (csv) format.
+Most tidyverse functions use underscores (_) to separate words. The appropriate one to read a csv file is <code>read_csv()</code>.
+First, check its help page:</p>
+<pre class="r"><code>?read_csv</code></pre>
+<p>The usage section says:</p>
+<pre><code>read_csv(file, col_names = TRUE, col_types = NULL,
+locale = default_locale(), na = c(&quot;&quot;, &quot;NA&quot;), quoted_na = TRUE,
+quote = &quot;\&quot;&quot;, comment = &quot;&quot;, trim_ws = TRUE, skip = 0,
+n_max = Inf, guess_max = min(1000, n_max),
+progress = show_progress(), skip_empty_rows = TRUE)</code></pre>
+<p>And the Arguments section says:</p>
+<pre><code>file:
+
+Either a path to a file, a connection, or literal data (either a single string or a raw vector).
+
+Files ending in .gz, .bz2, .xz, or .zip will be automatically uncompressed. Files starting with http://, https://, ftp://, or ftps:// will be automatically downloaded. Remote gz files can also be automatically downloaded and decompressed.</code></pre>
+<p>Hence, we will provide either the path to the file (i.e. the address of the file on your PC), if you have downloaded it, or the URL address of the file on the web.</p>
+<pre class="r"><code>hp &lt;- read_csv(file = &#39;https://uoepsy.github.io/data/HappyPlanet.csv&#39;)
+hp</code></pre>
+<pre><code>## # A tibble: 140 x 14
+##    country region life_expectancy wellbeing happy_life_years footprint
+##    &lt;chr&gt;   &lt;chr&gt;            &lt;dbl&gt;     &lt;dbl&gt;            &lt;dbl&gt;     &lt;dbl&gt;
+##  1 Afghan… Middl…            59.7       3.8             12.4      0.79
+##  2 Albania Post-…            77.3       5.5             34.4      2.21
+##  3 Algeria Middl…            74.3       5.6             30.5      2.12
+##  4 Argent… Ameri…            75.9       6.5             40.2      3.14
+##  5 Armenia Post-…            74.4       4.3             24.0      2.23
+##  6 Austra… Asia …            82.1       7.2             53.1      9.31
+##  7 Austria Europe            81.0       7.4             54.4      6.06
+##  8 Bangla… Asia …            70.8       4.7             23.3      0.72
+##  9 Belarus Post-…            70.9       5.7             34.0      5.09
+## 10 Belgium Europe            80.4       6.9             49.5      7.44
+## # … with 130 more rows, and 8 more variables: inequality_of_outcomes &lt;dbl&gt;,
+## #   inequality_adjusted_life_expectancy &lt;dbl&gt;,
+## #   inequality_adjusted_wellbeing &lt;dbl&gt;, happy_planet_index &lt;dbl&gt;,
+## #   gdp_per_capita &lt;dbl&gt;, population &lt;dbl&gt;, gini_index &lt;chr&gt;, hpi_rank &lt;dbl&gt;</code></pre>
+<p>As you can see, the data have 140 countries and 14 variables recorded, including the country name.</p>
+<p>To check the names of the variables that have been recorded we can type</p>
+<pre class="r"><code>names(hp)</code></pre>
+<pre><code>##  [1] &quot;country&quot;                             &quot;region&quot;                             
+##  [3] &quot;life_expectancy&quot;                     &quot;wellbeing&quot;                          
+##  [5] &quot;happy_life_years&quot;                    &quot;footprint&quot;                          
+##  [7] &quot;inequality_of_outcomes&quot;              &quot;inequality_adjusted_life_expectancy&quot;
+##  [9] &quot;inequality_adjusted_wellbeing&quot;       &quot;happy_planet_index&quot;                 
+## [11] &quot;gdp_per_capita&quot;                      &quot;population&quot;                         
+## [13] &quot;gini_index&quot;                          &quot;hpi_rank&quot;</code></pre>
+<p>So, for each country, they have recorded country name, which “region” it is part of, life expectancy of the country, wellbeing index, and so on.</p>
+</div>
+<div id="manipulating-data" class="section level1">
+<h1>Manipulating data</h1>
+<p>To select some specific variables, rather than working with the full 14 attributes, you use the <code>select()</code> function. Let’s select the name and population of each country:</p>
+<pre class="r"><code>hp %&gt;%
+  select(country, population)</code></pre>
+<pre><code>## # A tibble: 140 x 2
+##    country     population
+##    &lt;chr&gt;            &lt;dbl&gt;
+##  1 Afghanistan   29726803
+##  2 Albania        2900489
+##  3 Algeria       37439427
+##  4 Argentina     42095224
+##  5 Armenia        2978339
+##  6 Australia     22728254
+##  7 Austria        8429991
+##  8 Bangladesh   155257387
+##  9 Belarus        9464000
+## 10 Belgium       11128246
+## # … with 130 more rows</code></pre>
+<p>To select all character variables, you can use the <code>select(where(is_character))</code> function. Let’s check which variables are categorical:</p>
+<pre class="r"><code>hp %&gt;%
+  select(where(is_character))</code></pre>
+<pre><code>## # A tibble: 140 x 3
+##    country     region                       gini_index      
+##    &lt;chr&gt;       &lt;chr&gt;                        &lt;chr&gt;           
+##  1 Afghanistan Middle East and North Africa Data unavailable
+##  2 Albania     Post-communist               28.96           
+##  3 Algeria     Middle East and North Africa Data unavailable
+##  4 Argentina   Americas                     42.49           
+##  5 Armenia     Post-communist               30.48           
+##  6 Australia   Asia Pacific                 Data unavailable
+##  7 Austria     Europe                       30.48           
+##  8 Bangladesh  Asia Pacific                 Data unavailable
+##  9 Belarus     Post-communist               26.01           
+## 10 Belgium     Europe                       27.59           
+## # … with 130 more rows</code></pre>
+<p>So this returns 3 variables out of the 14 ones: <code>country</code>, <code>region</code> and <code>gini_index</code>. But wait, <code>gini_index</code> stores numbers, and the letters come from the fact that are many missing values, which have been encoded as ‘Data unavailable’.
+Let’s fix that by reading the data again into R, and saying that the Not Available (NA) data have been encoded as ‘Data unavailable’ via the flag <code>na = 'Data unavailable'</code>:</p>
+<pre class="r"><code>hp &lt;- read_csv(file = &#39;https://uoepsy.github.io/data/HappyPlanet.csv&#39;,
+               na = &#39;Data unavailable&#39;)
+hp</code></pre>
+<pre><code>## # A tibble: 140 x 14
+##    country region life_expectancy wellbeing happy_life_years footprint
+##    &lt;chr&gt;   &lt;chr&gt;            &lt;dbl&gt;     &lt;dbl&gt;            &lt;dbl&gt;     &lt;dbl&gt;
+##  1 Afghan… Middl…            59.7       3.8             12.4      0.79
+##  2 Albania Post-…            77.3       5.5             34.4      2.21
+##  3 Algeria Middl…            74.3       5.6             30.5      2.12
+##  4 Argent… Ameri…            75.9       6.5             40.2      3.14
+##  5 Armenia Post-…            74.4       4.3             24.0      2.23
+##  6 Austra… Asia …            82.1       7.2             53.1      9.31
+##  7 Austria Europe            81.0       7.4             54.4      6.06
+##  8 Bangla… Asia …            70.8       4.7             23.3      0.72
+##  9 Belarus Post-…            70.9       5.7             34.0      5.09
+## 10 Belgium Europe            80.4       6.9             49.5      7.44
+## # … with 130 more rows, and 8 more variables: inequality_of_outcomes &lt;dbl&gt;,
+## #   inequality_adjusted_life_expectancy &lt;dbl&gt;,
+## #   inequality_adjusted_wellbeing &lt;dbl&gt;, happy_planet_index &lt;dbl&gt;,
+## #   gdp_per_capita &lt;dbl&gt;, population &lt;dbl&gt;, gini_index &lt;dbl&gt;, hpi_rank &lt;dbl&gt;</code></pre>
+<p>To filter the tibble and only visualise the rows corresponding to countries in Europe:</p>
+<pre class="r"><code>hp %&gt;%
+  filter(region == &#39;Europe&#39;)</code></pre>
+<pre><code>## # A tibble: 20 x 14
+##    country region life_expectancy wellbeing happy_life_years footprint
+##    &lt;chr&gt;   &lt;chr&gt;            &lt;dbl&gt;     &lt;dbl&gt;            &lt;dbl&gt;     &lt;dbl&gt;
+##  1 Austria Europe            81.0      7.4              54.4      6.06
+##  2 Belgium Europe            80.4      6.9              49.5      7.44
+##  3 Cyprus  Europe            79.8      6.2              42.3      4.21
+##  4 Denmark Europe            79.8      7.5              54.4      5.51
+##  5 Finland Europe            80.4      7.4              54.6      5.87
+##  6 France  Europe            81.8      6.6              48.1      5.14
+##  7 Germany Europe            80.6      6.7              48.2      5.3 
+##  8 Greece  Europe            80.5      5.1              33.3      4.38
+##  9 Iceland Europe            82.2      7.6              58.0      6.43
+## 10 Ireland Europe            80.5      7                50.3      5.57
+## 11 Italy   Europe            82.7      5.8              41.1      4.61
+## 12 Luxemb… Europe            81.1      7                51.7     15.8 
+## 13 Malta   Europe            80.2      6                40.8      4.36
+## 14 Nether… Europe            81.2      7.5              57.0      5.28
+## 15 Norway  Europe            81.3      7.7              57.1      4.98
+## 16 Portug… Europe            80.3      4.99             32.3      3.88
+## 17 Spain   Europe            82.2      6.3              45.3      3.67
+## 18 Sweden  Europe            81.8      7.6              57.4      7.25
+## 19 Switze… Europe            82.6      7.8              59.3      5.79
+## 20 United… Europe            80.4      6.9              49.1      4.94
+## # … with 8 more variables: inequality_of_outcomes &lt;dbl&gt;,
+## #   inequality_adjusted_life_expectancy &lt;dbl&gt;,
+## #   inequality_adjusted_wellbeing &lt;dbl&gt;, happy_planet_index &lt;dbl&gt;,
+## #   gdp_per_capita &lt;dbl&gt;, population &lt;dbl&gt;, gini_index &lt;dbl&gt;, hpi_rank &lt;dbl&gt;</code></pre>
+<p>To both filter and select some columns:</p>
+<pre class="r"><code>hp %&gt;%
+  select(country, region, population) %&gt;%
+  filter(region == &#39;Europe&#39;)</code></pre>
+<pre><code>## # A tibble: 20 x 3
+##    country        region population
+##    &lt;chr&gt;          &lt;chr&gt;       &lt;dbl&gt;
+##  1 Austria        Europe    8429991
+##  2 Belgium        Europe   11128246
+##  3 Cyprus         Europe    1129303
+##  4 Denmark        Europe    5591572
+##  5 Finland        Europe    5413971
+##  6 France         Europe   65639975
+##  7 Germany        Europe   80425823
+##  8 Greece         Europe   11045011
+##  9 Iceland        Europe     320716
+## 10 Ireland        Europe    4586897
+## 11 Italy          Europe   59539717
+## 12 Luxembourg     Europe     530946
+## 13 Malta          Europe     419455
+## 14 Netherlands    Europe   16754962
+## 15 Norway         Europe    5018573
+## 16 Portugal       Europe   10514844
+## 17 Spain          Europe   46773055
+## 18 Sweden         Europe    9519374
+## 19 Switzerland    Europe    7996861
+## 20 United Kingdom Europe   63700300</code></pre>
+<p>or, equivalently:</p>
+<pre class="r"><code>hp %&gt;%
+  filter(region == &#39;Europe&#39;) %&gt;%
+  select(region, country, population)</code></pre>
+<pre><code>## # A tibble: 20 x 3
+##    region country        population
+##    &lt;chr&gt;  &lt;chr&gt;               &lt;dbl&gt;
+##  1 Europe Austria           8429991
+##  2 Europe Belgium          11128246
+##  3 Europe Cyprus            1129303
+##  4 Europe Denmark           5591572
+##  5 Europe Finland           5413971
+##  6 Europe France           65639975
+##  7 Europe Germany          80425823
+##  8 Europe Greece           11045011
+##  9 Europe Iceland            320716
+## 10 Europe Ireland           4586897
+## 11 Europe Italy            59539717
+## 12 Europe Luxembourg         530946
+## 13 Europe Malta              419455
+## 14 Europe Netherlands      16754962
+## 15 Europe Norway            5018573
+## 16 Europe Portugal         10514844
+## 17 Europe Spain            46773055
+## 18 Europe Sweden            9519374
+## 19 Europe Switzerland       7996861
+## 20 Europe United Kingdom   63700300</code></pre>
+<p>Let’s only work with a subset of the variables by overwriting the original data. You can either specify the variables to keep:</p>
+<pre class="r"><code>hp &lt;- hp %&gt;%
+  select(country, region, life_expectancy, wellbeing, footprint,
+         happy_planet_index, gdp_per_capita, population, hpi_rank)</code></pre>
+<p>or specify those to be dropped by adding a minus before the name:</p>
+<pre class="r"><code>hp &lt;- hp %&gt;%
+  select(-happy_life_years, -inequality_of_outcomes,
+         -inequality_adjusted_life_expectancy, 
+         -inequality_adjusted_wellbeing,
+         -gini_index)</code></pre>
+<p>Check the new dimensions of the data:</p>
+<pre class="r"><code>dim(hp)</code></pre>
+<pre><code>## [1] 140   9</code></pre>
+<p>To modify the data frame and add a new column, or modify an existing one, we use the <code>mutate</code> function.
+Let’s create a new variable called <code>squared_hpi</code> which is simply computed as the squared <code>happy_planet_index</code>:</p>
+<pre class="r"><code>hp &lt;- hp %&gt;%
+  mutate(squared_hpi = happy_planet_index^2)</code></pre>
+<p>Say you want to compute the average ecological footprint (global hectares/person) of the countries in the world.
+Effectively, we are summarising the data, so the function is <code>summarize()</code> or <code>summarise()</code>:</p>
+<pre class="r"><code>hp %&gt;%
+  summarize(avg_footprint = mean(footprint))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   avg_footprint
+##           &lt;dbl&gt;
+## 1          3.26</code></pre>
+<p>To compute both the mean and standard deviation, we would do:</p>
+<pre class="r"><code>hp %&gt;%
+  summarize(avg_footprint = mean(footprint),
+            sd_footprint = sd(footprint))</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   avg_footprint sd_footprint
+##           &lt;dbl&gt;        &lt;dbl&gt;
+## 1          3.26         2.30</code></pre>
+<p>Say, instead, that you wish to compute the number of countries in each region. This means that we are computing a summary (number of countries) within each region. So it’s a grouped computation.</p>
+<pre class="r"><code>hp %&gt;%
+  group_by(region) %&gt;%
+  summarize(count = n())</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   region                       count
+##   &lt;chr&gt;                        &lt;int&gt;
+## 1 Americas                        25
+## 2 Asia Pacific                    21
+## 3 Europe                          20
+## 4 Middle East and North Africa    14
+## 5 Post-communist                  26
+## 6 Sub Saharan Africa              34</code></pre>
+<p>The function <code>group_by()</code> tells R to perform the later computations within groups, where the groups are specified by the categorical variable in <code>group_by()</code>. Next, the <code>summarize</code> function tells R to compute a summary of the data — in our case, to count the rows, and this is done by the function <code>n()</code>.</p>
+<p>To sort a tibble in ascending order according to the values of a particular variable, use the function <code>arrange(&lt;variable name&gt;)</code>.
+To sort in descending order, use <code>arrange(desc(&lt;variable name&gt;))</code>.</p>
+<div class="question-begin">
+Question
+</div>
+<div class="question-body">
+<p>Compute the average ecological footprint (global hectares/person) of each region and sort the table in descending order.</p>
+<p class="question-end">
+</p>
+</div>
+<div class="solution-begin">
+Solution <span id="sol-start-138" class="fa fa-plus solution-icon clickable" onclick="toggle_visibility(&#39;sol-body-138&#39;, &#39;sol-start-138&#39;)"></span>
+</div>
+<div id="sol-body-138" class="solution-body" style="display: none;">
+<pre class="r"><code>hp %&gt;%
+  group_by(region) %&gt;%
+  summarise(avg_footprint = mean(footprint)) %&gt;%
+  arrange(desc(avg_footprint))</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   region                       avg_footprint
+##   &lt;chr&gt;                                &lt;dbl&gt;
+## 1 Europe                                5.82
+## 2 Post-communist                        3.85
+## 3 Americas                              3.25
+## 4 Asia Pacific                          3.16
+## 5 Middle East and North Africa          2.74
+## 6 Sub Saharan Africa                    1.58</code></pre>
+</div>
+<p class="solution-end">
+</p>
+</div>
+<div id="plots" class="section level1">
+<h1>Plots</h1>
+<p>Tidyverse provides also a very sophisticated and customisable plotting package called <strong>ggplot2</strong>.
+Why 2? Because it’s the second version of the package. Why gg? Because it follows the grammar of graphics.
+The grammar of graphics states that each plot is made of different layers which are “added” on top of each other:</p>
+<ul>
+<li><em>Data</em>: which data to use for the plot</li>
+<li><em>Aesthetics</em>: which variables affect the plot. What gives the x-axis position? What gives the y-axis position? What gives the color?</li>
+<li><em>Geometric objects</em>: What kind of geometric shapes should I plot? A line? Points? Bars?</li>
+<li><em>Optional</em> elements such as theme properties (rotate labels), create panels for each group, and more.</li>
+</ul>
+<p>The code we will write will look similar to the following lines. However, the code below will not run in R. It is rather meant to be an explanation of what each layer does.</p>
+<pre><code>ggplot(&lt;data&gt;) +
+  geom_1(&lt;aesthetics 1&gt;, &lt;options&gt;) +
+  geom_2(&lt;aesthetics 2&gt;, &lt;options&gt;) +
+  labels() +
+  theme_options()</code></pre>
+<p>Let’s try this out by creating a barplot of the regions.
+This will show how many times each region appears in the data frame. Hence, since the cases are the countries, it will show how many countries are in each region.</p>
+<p>The data is the most important layer and tells ggplot where to find the data for the plot:</p>
+<pre class="r"><code>ggplot(hp)</code></pre>
+<p><img src="intro_tidyverse_files/figure-html/unnamed-chunk-26-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>To create a barplot of the regions, we can use <code>geom_bar()</code>. This function will automatically count how many times each region appears in the data and plot the count vs the region names.</p>
+<pre class="r"><code>ggplot(hp) +
+  geom_bar(aes(x = region))</code></pre>
+<p><img src="intro_tidyverse_files/figure-html/unnamed-chunk-27-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>It’s quite hard to read. Let’s flip the two axes and add some labels.</p>
+<pre class="r"><code>ggplot(hp) +
+  geom_bar(aes(x = region)) +
+  labs(x = &#39;Region&#39;, y = &#39;Num. Countries&#39;) +
+  coord_flip()</code></pre>
+<p><img src="intro_tidyverse_files/figure-html/unnamed-chunk-28-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>Otherwise, you could have googled how to rotate the x-axis labels - it’s quite hard to remember.
+Google ‘rotate x-axis labels ggplot2’ and you will find that the line to add is <code>theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))</code>. However, I don’t want them vertical, but I only want to rotate them by 45 degrees. Try experimenting with the code, it won’t destroy your laptop!</p>
+<pre class="r"><code>ggplot(hp) +
+  geom_bar(aes(x = region)) +
+  labs(x = &#39;Region&#39;, y = &#39;Num. Countries&#39;) +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))</code></pre>
+<p><img src="intro_tidyverse_files/figure-html/unnamed-chunk-29-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>Next, let’s plot the wellbeing vs footprint for each country as points on a graph, and color each point by the region:</p>
+<pre class="r"><code>ggplot(hp) +
+  geom_point(aes(x = footprint, y = wellbeing, color = region)) +
+  labs(x = &#39;Footprint&#39;, y = &#39;Wellbeing&#39;, color = &#39;Region&#39;)</code></pre>
+<p><img src="intro_tidyverse_files/figure-html/unnamed-chunk-30-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>Let’s now plot more categorical variables. We will create a barplot of the countries in Europe, ordered by their HPI (Happy Planet Index) ranking.
+Because the HPI rank is already computed in the dataset, we don’t need to use <code>geom_bar()</code>, but we will use <code>geom_col()</code> which creates columns of different heights according to a variable — in our case, <code>hpi_rank</code>.</p>
+<pre class="r"><code>rank_data &lt;- hp %&gt;%
+  filter(region == &#39;Europe&#39;) %&gt;%
+  mutate(
+    country = fct_reorder(country, hpi_rank, .desc = TRUE)
+  )
+
+ggplot(rank_data) +
+  geom_col(aes(x = hpi_rank, y = country), fill = &#39;darkolivegreen3&#39;) +
+  labs(x = &#39;HPI Rank (Lower is better)&#39;, y = &#39;Country&#39;, 
+       title = &#39;Countries in Europe by HPI Rank&#39;)</code></pre>
+<p><img src="intro_tidyverse_files/figure-html/unnamed-chunk-31-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>The following code creates a density plot of life expectancy scores and a boxplot of the life expectancy scores to inspect for outliers.</p>
+<pre class="r"><code>ggplot(hp) +
+  geom_density(aes(x = life_expectancy)) +
+  geom_boxplot(aes(x = life_expectancy)) +
+  labs(x = &#39;Life Expectancy (years)&#39;)</code></pre>
+<p><img src="intro_tidyverse_files/figure-html/unnamed-chunk-32-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>The automatic boxplot width appears to be too big. We can specify the boxplot width by including a <strong>fixed aesthetic</strong>, as it does not depend on the data, outside of the <code>aes()</code> function:</p>
+<pre class="r"><code>ggplot(hp) +
+  geom_density(aes(x = life_expectancy)) +
+  geom_boxplot(aes(x = life_expectancy), width = 0.01) +
+  labs(x = &#39;Life Expectancy (years)&#39;)</code></pre>
+<p><img src="intro_tidyverse_files/figure-html/unnamed-chunk-33-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>If you are using multiple geometric objects that share the same aesthetics, you can specify them once for all in the first function <code>ggplot()</code> rather than inside each <code>geom_</code> function:</p>
+<pre class="r"><code>ggplot(hp, aes(x = life_expectancy)) +
+  geom_density() +
+  geom_boxplot(width = 0.01) +
+  labs(x = &#39;Life Expectancy (years)&#39;)</code></pre>
+<p><img src="intro_tidyverse_files/figure-html/unnamed-chunk-34-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>To add colours to each geometric object we can write:</p>
+<pre class="r"><code>ggplot(hp, aes(x = life_expectancy)) +
+  geom_density(color = &#39;darkorange&#39;) +
+  geom_boxplot(width = 0.01, color = &#39;dodgerblue4&#39;, fill = &#39;lightblue1&#39;) +
+  labs(x = &#39;Life Expectancy (years)&#39;)</code></pre>
+<p><img src="intro_tidyverse_files/figure-html/unnamed-chunk-35-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>The <code>color =</code> and <code>fill =</code> properties are other examples of fixed aesthetics as they are specified outside of the aesthetics function <code>aes()</code>.</p>
+<p>If, instead, you wanted data-dependent aesthetics, i.e. aesthetics that change with the data, you would add them inside of <code>aes()</code>. For example, to colour the densities by region, you would do:</p>
+<pre class="r"><code>ggplot(hp, aes(x = life_expectancy, color = region)) +
+  geom_density() +
+  labs(x = &#39;Life Expectancy (years)&#39;, color = &#39;Region&#39;)</code></pre>
+<p><img src="intro_tidyverse_files/figure-html/unnamed-chunk-36-1.png" width="70%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<p>You have learned about several new functions:</p>
+<ul>
+<li><code>tibble()</code>: the tidyverse equivalent of <code>data.frame()</code></li>
+<li><code>select()</code>: extracts columns</li>
+<li><code>filter()</code>: subsets cases based on conditions</li>
+<li><code>mutate()</code>: creates new variables or overwrites an existing one</li>
+<li><code>group_by()</code>: groups related rows together</li>
+<li><code>summarise()</code>/<code>summarize()</code>: reduces values down to a single summary</li>
+<li><code>ggplot()</code>: starts a grammar of graphics plot, and is followed by different geometries</li>
+</ul>
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;">
+
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>
+Numeric variables are data for which standard arithmetic operations, like addition and taking the mean, make sense.
+Categorical variables are data telling us which category/group each case belongs to. In R, these are encoded as a <code>factor()</code>.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

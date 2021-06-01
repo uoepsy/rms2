@@ -1,0 +1,191 @@
+---
+title: "<b>Week 7: ANOVA as LM - Conceptual </b>"
+subtitle: "RMS2<br><br> "
+author: ""
+institute: "Department of Psychology<br>The University of Edinburgh"
+date: "AY 2020-2021"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: xaringan-themer.css
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+```{r xaringan-themer, include = FALSE}
+library(xaringanthemer)
+style_mono_accent(
+  #base_color = "#0F4C81", # DAPR1
+   base_color = "#BF1932", # DAPR2
+  # base_color = "#88B04B", # DAPR3 
+  # base_color = "#FCBB06", # USMR
+  # base_color = "#a41ae4", # MSMR
+  header_color = "#000000",
+  header_font_google = google_font("Source Sans Pro"),
+  header_font_weight = 400,
+  text_font_google = google_font("Source Sans Pro", "400", "400i", "600", "600i"),
+  code_font_google = google_font("Source Code Pro")
+)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(kableExtra)
+```
+
+
+# Topics for today
+
++ We are going to look conceptually at the relation between ANOVA and linear models.
+
++ In the next videos, we will show the statistical equivalence.
+
+
+---
+# Recall linear model
+
+$$
+y_i = b_0 + b_1x_1 + b_2x_2 ...b_kx_k + \epsilon_i
+$$
+
++ Where the $b$ represent the effects of the predictors on the outcome
+
++ As a set of $b$ represent our model/design.
+
++ So we could re-write informally as:
+
+$$
+y_i = \text{stuff we think predicts the outcome} + \epsilon_i
+$$
+
+
+---
+# ANOVA and Experiments
++ In the context of an experimental designs...
+
+**Things that predict outcome = experimental conditions**
+
++ ANOVA as a tool typically applied to experiments, seeks to understand if different conditions actually do account for variance in the outcome.
+
+---
+# A brief example
+
++ Suppose that we care about the effects of 2 drug treatments on the reading ability of hyperactive children. 
+
++ In our design, we randomly select 3 groups of children (n=5 per group, N = 15)
+  + we give group 1 a placebo (a1), 
+  + group 2 one drug (a2), and 
+  + group 3 a different drug (a3). 
+
++ After 1 hour we let the children study a passage of text for 10 minutes, then administer a standard test of comprehension
+
+---
+# The data
+```{r, echo=FALSE}
+data <- tibble(
+  ID = paste("ID", 1:15, sep=""),
+  A_condition = c(rep("a1_control", 5), rep("a2_drug1", 5), rep("a3_drug2", 5)),
+  score = c(16,18,10,12,19,4,7,8,10,1,2,10,9,13,11)
+)
+data %>%
+  arrange(A_condition)
+```
+
+---
+# Describe the data
+
+.pull-left[
+```{r, eval=FALSE}
+data %>%
+  group_by(A_condition) %>%
+  summarise(
+    mean = round(mean(score)),
+    sd = round(sd(score),1),
+    N = n()
+  )
+```
+]
+
+.pull-right[
+```{r, echo=FALSE}
+data %>%
+  group_by(A_condition) %>%
+  summarise(
+    mean = round(mean(score)),
+    sd = round(sd(score),1),
+    N = n()
+  )
+```
+]
+
+
+---
+# Some observations on our data
+
+1. The group means are not the same. That is, there is some between group variation in average scores.
+2. Not all individuals within the group scored the exact same value as the mean (note we have a non-zero standard deviation - plus we can just look at the numbers!!!). So there is some within group variation.
+
+
+---
+# What do we want to know?
++ Is more variation between groups than there is within groups. Why? 
+
++ Consider what the groups represent. 
+  + Each group is one of our experimental conditions. 
+  + If we have designed a good experiment, then we would hope that our design would create some differences across groups. (are the drugs effective) 
+  + So, in this design **we want to see lots of between group variance**. 
+  + That is what tells us the study "worked".
+
+---
+# What do we want to know?
++ Moreover, we want the magnitude of this to be bigger than the fluctuations in scores we see within a group. Why? 
+
++ Well if we have appropriately randomly assigned people to groups, then any within group variation should be due to random error. 
+
++ This leads us to the key tests in ANOVA:
+
+$$
+\frac{\text{between group variation}}{\text{within group variation}}
+$$
+
++ Or 
+
+$$
+\frac{\text{thing we think explains variation (groups or design)}}{\text{error}}
+$$
+
+
+---
+# What data arises from experiments?
++ But pause for a moment.
+
++ Experiments produce nominal category variables.
+
++ We want to know if they can be used to explain variation in the outcome.
+
++ We know we can look at such relationships using `lm`
+
++ We also know we can have nominal category predictors in `lm`
+
++ And we know the $F$-tests in `lm` are testing the ratio of explained versus error variance.
+
++ So ANOVA and lm = doing the same thing.
+
+
+---
+# Summary of today
+
++ Conceptually reviewed the relation between experiments, ANOVA and the structure of linear models.
+
++ Key take home:
+  + A linear model with nominal category predictors can do the same analytic job as ANOVA
+
++ In the next videos, and in your lab, we will show with examples, and more formally, this equivalence.

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Week 7: ANOVA as LM - Conceptual</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# <b>Week 7: ANOVA as LM - Conceptual </b>
+## RMS2<br><br>
+### Department of Psychology<br>The University of Edinburgh
+### AY 2020-2021
+
+---
+
+
+
+
+
+
+
+
+
+
+# Topics for today
+
++ We are going to look conceptually at the relation between ANOVA and linear models.
+
++ In the next videos, we will show the statistical equivalence.
+
+
+---
+# Recall linear model
+
+$$
+y_i = b_0 + b_1x_1 + b_2x_2 ...b_kx_k + \epsilon_i
+$$
+
++ Where the `\(b\)` represent the effects of the predictors on the outcome
+
++ As a set of `\(b\)` represent our model/design.
+
++ So we could re-write informally as:
+
+$$
+y_i = \text{stuff we think predicts the outcome} + \epsilon_i
+$$
+
+
+---
+# ANOVA and Experiments
++ In the context of an experimental designs...
+
+**Things that predict outcome = experimental conditions**
+
++ ANOVA as a tool typically applied to experiments, seeks to understand if different conditions actually do account for variance in the outcome.
+
+---
+# A brief example
+
++ Suppose that we care about the effects of 2 drug treatments on the reading ability of hyperactive children. 
+
++ In our design, we randomly select 3 groups of children (n=5 per group, N = 15)
+  + we give group 1 a placebo (a1), 
+  + group 2 one drug (a2), and 
+  + group 3 a different drug (a3). 
+
++ After 1 hour we let the children study a passage of text for 10 minutes, then administer a standard test of comprehension
+
+---
+# The data
+
+```
+## # A tibble: 15 x 3
+##    ID    A_condition score
+##    &lt;chr&gt; &lt;chr&gt;       &lt;dbl&gt;
+##  1 ID1   a1_control     16
+##  2 ID2   a1_control     18
+##  3 ID3   a1_control     10
+##  4 ID4   a1_control     12
+##  5 ID5   a1_control     19
+##  6 ID6   a2_drug1        4
+##  7 ID7   a2_drug1        7
+##  8 ID8   a2_drug1        8
+##  9 ID9   a2_drug1       10
+## 10 ID10  a2_drug1        1
+## 11 ID11  a3_drug2        2
+## 12 ID12  a3_drug2       10
+## 13 ID13  a3_drug2        9
+## 14 ID14  a3_drug2       13
+## 15 ID15  a3_drug2       11
+```
+
+---
+# Describe the data
+
+.pull-left[
+
+```r
+data %&gt;%
+  group_by(A_condition) %&gt;%
+  summarise(
+    mean = round(mean(score)),
+    sd = round(sd(score),1),
+    N = n()
+  )
+```
+]
+
+.pull-right[
+
+```
+## # A tibble: 3 x 4
+##   A_condition  mean    sd     N
+##   &lt;chr&gt;       &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;
+## 1 a1_control     15   3.9     5
+## 2 a2_drug1        6   3.5     5
+## 3 a3_drug2        9   4.2     5
+```
+]
+
+
+---
+# Some observations on our data
+
+1. The group means are not the same. That is, there is some between group variation in average scores.
+2. Not all individuals within the group scored the exact same value as the mean (note we have a non-zero standard deviation - plus we can just look at the numbers!!!). So there is some within group variation.
+
+
+---
+# What do we want to know?
++ Is more variation between groups than there is within groups. Why? 
+
++ Consider what the groups represent. 
+  + Each group is one of our experimental conditions. 
+  + If we have designed a good experiment, then we would hope that our design would create some differences across groups. (are the drugs effective) 
+  + So, in this design **we want to see lots of between group variance**. 
+  + That is what tells us the study "worked".
+
+---
+# What do we want to know?
++ Moreover, we want the magnitude of this to be bigger than the fluctuations in scores we see within a group. Why? 
+
++ Well if we have appropriately randomly assigned people to groups, then any within group variation should be due to random error. 
+
++ This leads us to the key tests in ANOVA:
+
+$$
+\frac{\text{between group variation}}{\text{within group variation}}
+$$
+
++ Or 
+
+$$
+\frac{\text{thing we think explains variation (groups or design)}}{\text{error}}
+$$
+
+
+---
+# What data arises from experiments?
++ But pause for a moment.
+
++ Experiments produce nominal category variables.
+
++ We want to know if they can be used to explain variation in the outcome.
+
++ We know we can look at such relationships using `lm`
+
++ We also know we can have nominal category predictors in `lm`
+
++ And we know the `\(F\)`-tests in `lm` are testing the ratio of explained versus error variance.
+
++ So ANOVA and lm = doing the same thing.
+
+
+---
+# Summary of today
+
++ Conceptually reviewed the relation between experiments, ANOVA and the structure of linear models.
+
++ Key take home:
+  + A linear model with nominal category predictors can do the same analytic job as ANOVA
+
++ In the next videos, and in your lab, we will show with examples, and more formally, this equivalence.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

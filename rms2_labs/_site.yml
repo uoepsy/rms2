@@ -1,0 +1,53 @@
+name: "RMS2"
+output_dir: "../docs/labs"
+navbar:
+  title: "<strong>RMS2</strong>"
+  type: default
+  left:
+    - icon: "fa-home"
+      href: index.html
+    - text: 'RMS2 starts here'
+      href: intro_tidyverse.html
+    - text: "Regression models"
+      menu:
+      - text: "1/1: Simple linear regression"
+        href: 01_slr.html
+      - text: "1/2: Multiple regression basics"
+        href: 02_mlr.html
+      - text: "1/3: Interactions"
+        href: 03_mlr_int.html
+      - text: "1/4: Assumptions and diagnostics"
+        href: 04_mlr_assumpt.html
+      - text: "1/5: Model fit, model comparison, and model selection"
+        href: 05_mlr_eval.html
+      - text: "1/6: Break week"
+    - text: "Models for experimental data"
+      menu:
+      - text: "1/7: ANOVA and contrasts"
+        href: 07_anova.html
+      - text: "1/8: Factorial ANOVA"
+        href: 08_factorial_anova.html
+      - text: "1/9: Repeated measures"
+        href: 09_repeated_measures.html
+      - text: "1/10: Surveys and  PCA"
+        href: 10_surveys_pca.html
+      - text: "1/11: Exploratory factor analysis"
+        href: 11_fa.html
+  right:
+    - text: "Extra"
+      menu:
+      #- text: "About the course"
+      #  href: about.html
+      - text: "Getting started with R & RStudio"
+        href: intro_r_rstudio.html
+      - text: "Example Write-up"
+        href: extra_writeup.html
+output: 
+  bookdown::html_document2:
+    toc: true
+    toc_float: true
+    theme: cosmo
+    number_sections: false
+    include:
+      in_header: assets/toggling.html
+    css: assets/style-labs.css

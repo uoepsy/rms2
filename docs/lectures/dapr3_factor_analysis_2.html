@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Principal Components Analysis</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="ALEXANDER WEISS" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Principal Components Analysis
+## Research Methods and Statistics 2<br><br>
+### ALEXANDER WEISS
+### Department of Psychology<br>The University of Edinburgh
+### AY 2020-2021
+
+---
+
+
+
+
+
+
+# Today's topics
++ Data reduction
++ Computing principal components
++ How many components to extract
++ Analytic rotation/transformation
+
+---
+
+# What's data reduction?
++ Mathematical and statistical procedures
+  + Reduce large set of variables to a smaller set
+  + Several forms of data reduction
+	  + **Principal components analysis**
+	  + **Factor analysis**
+	  + Image analysis
+	  + Correspondence analysis
+	  + K-means clustering
+	  + Multidimensional scaling
+	  + Latent class analysis
+
+---
+
+# Data reduction versus other types of analyses
++ Like partial correlation, regression, ANOVA, and ANCOVA, you're making new variables by combining old ones
+
+
++ However, *no* variable is singled out as the "dependent variable"
+  + In principal components analyses, there are no dependent variables
+  + In factor analysis, *all* the variables are dependent variables
+
+---
+
+# When might you use data reduction?
++ You work with observational data and many variables
+  + Psychology (differential, industrial/organizational)
+  + Genetics
+  + Epidemiology
+  + Paleontology (yes, dinosaurs)
+
+---
+
+# Questions to ask before you start
++ Why are your variables correlated?
+  + Agnostic/don't care
+  + Believe there *are* underlying "causes" of these correlations 
+
+
++ What are your goals?
+  + Just reduce the number of variables
+  + Reduce your variables and learn about/model their underlying
+  (latent) causes
+
+---
+
+# Questions to ask before you start
++ Why are your variables correlated?
+  + **Agnostic/don't care**
+  + Believe there *are* underlying "causes" of these correlations
+
+
++ What are your goals?
+  + **Just reduce the number of variables**
+  + Reduce your variables and learn about/model their underlying
+  (latent) causes
+
+---
+ 
+# Principal components analysis
++ Goal is explaining as much of the total variance in a data set as possible
+  + Starts with original data
+  + Calculates covariances (correlations) between variables
+  + Applies procedure called 'eigendecomposition' to calculate a set of linear composites of the original variables
+
+---
+
+&lt;center&gt;
+# Caution!
+&lt;/center&gt;
++ Equations, math(s) even, ahead!
+  + Point is *not* to memorize or be able to do these calculations
+  + Point *is* to understand the background of these methods
+
+
+- I will get back to this
+
+---
+
+# Linear composites
++ Linear composites are the principal components
+  + If variables are closely related one another (large covariances/correlations), they can be represented by fewer composites, or even one composite
+  + If variables are not closely related (small covariances/correlations), a single composite will not do a good job of representing them
+
+
++ To see why, we need to look at eigendecomposition
+
+---
+
+# Eigendecomposition
++ Our linear composite, or principal component, `\(\mathbf{z}\)`, is equal to: `\({x_1}{w_1} + \dots + {x_p}{w_p}\)`
+	+ `\(x_p\)` are the variables and `\(w_p\)` are weights that relate the variables to the component
+
+
++ We can express this using matrix algebra notation, `\(\mathbf{z} = \mathbf{X}\mathbf{w}\)`
+	+ `\(\mathbf{X}\)` is a data matrix with `\(p\)` columns (one per
+	variable) and `\(n\)` rows (one per participant)
+	+ `\(\mathbf{w}\)` is the *eigenvector*
+		+ Single column (vector) that contains the weights
+          `\((w_1,\dots, w_p)'\)`
+		+ Maximize the variance explained by `\(\mathbf{z}\)`
+
+
++ The multiple regression equivalents of these equations are:
+`$$\mathbf{\hat{y}} = {x_1}{\beta_1} + \dots + {x_p}{\beta_p}$$`
+`$$\mathbf{\hat{y}} = \mathbf{X}\mathbf{\beta}$$`
+
+---
+
+# Eigendecomposition
++ To figure out `\(\mathbf{z}\)`, we need to solve for `\(\mathbf{w}\)`
+
+
++ For this purpose, we exploit a well-known relationship,
+  `\(\mathbf{A}\mathbf{w} = \lambda\mathbf{w}\)`
+	  + `\(\mathbf{A}\)` is a `\(p \times p\)` matrix (the correlation or
+      covariance matrix from your data)
+	  + `\(\lambda\)` is the *eigenvalue* for the eigenvector `\(\mathbf{w}\)`
+
+
++ What this means is that...
+	+ a vector of a square matrix is an eigenvector if it has a
+    corresponding eigenvalue
+	+ a vector is an eigenvector if, when we multiply it by a square
+      matrix, that vector has been scaled
+	+ the eigenvalue is the variance of the component
+
+
++ A `\(p \times p\)` matrix has `\(p\)` eigenvectors, each of which has `\(p\)` elements,
+  and `\(p\)` eigenvalues, one for each eigenvector
+
+---
+
+&lt;img src="dapr3_factor_analysis_2_files/figure-html/Eigenpicture-1.png" style="display: block; margin: auto;" /&gt;
+
+&lt;center&gt; An eigenvalue of 2 doubles the length of the corresponding
+eigenvector (the blue arrow) &lt;/center&gt;
+
+---
+
+# Solving for eigenvectors
++ Start by rearranging the equation, so that it is `\((\mathbf{A}-\lambda\mathbf{I})\mathbf{w}=0\)`
+  + The math is involved, but you can use R's `eigen` function to
+    solve it
+  + Consider two variables, x1 and x2, with an `\(r=0.80\)`
+  
+
+```r
+# Create the 2 x 2 matrix that shows the correlation of .8
+mat &lt;- matrix(c(1, .8, .8, 1), nrow=2)
+
+# Use the eigen function to get the 2 eigenvectors and 2 eigenvalues
+eigen(mat)
+```
+
+```
+## eigen() decomposition
+## $values
+## [1] 1.8 0.2
+## 
+## $vectors
+##           [,1]       [,2]
+## [1,] 0.7071068 -0.7071068
+## [2,] 0.7071068  0.7071068
+```
+---
+
+# What PCA with two variables, *r* = 0.00, looks like
+The eigenvectors and eigenvalues are:
+
+
+```r
+# Because correlation is 0, I have to add a tiny constant. See what
+# happens is you don't do this.
+mat &lt;- matrix(c(1, 0.000001, 0.000001, 1), nrow=2)
+
+# Use the eigen function to get the 2 eigenvectors and 2 eigenvalues
+eigen(mat)
+```
+
+```
+## eigen() decomposition
+## $values
+## [1] 1.000001 0.999999
+## 
+## $vectors
+##           [,1]       [,2]
+## [1,] 0.7071068 -0.7071068
+## [2,] 0.7071068  0.7071068
+```
+---
+
+# Plot raw data
+&lt;img src="dapr3_factor_analysis_2_files/figure-html/unnamed-chunk-1-1.png" width="450" height="450" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Add both (*p* = 2) eigenvectors
+&lt;img src="dapr3_factor_analysis_2_files/figure-html/unnamed-chunk-2-1.png" width="450" height="450" style="display: block; margin: auto;" /&gt;
+
+---
+
+# What eigenvalues do when *r* = 0.00
+&lt;img src="dapr3_factor_analysis_2_files/figure-html/unnamed-chunk-3-1.png" width="450" height="450" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Eigenvector 1 maximizes variance explained
+&lt;img src="dapr3_factor_analysis_2_files/figure-html/unnamed-chunk-4-1.png" width="450" height="450" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Eigenvector 2 maximizes variance explained
+&lt;img src="dapr3_factor_analysis_2_files/figure-html/unnamed-chunk-5-1.png" width="450" height="450" style="display: block; margin: auto;" /&gt;
+---
+
+# What PCA with two variables, *r* = 0.80, looks like
++ Remember how we obtained this before?
+
+
+```r
+# The 2 x 2 matrix that shows the correlation of .8
+mat &lt;- matrix(c(1, .8, .8, 1), nrow=2)
+
+# Applying the eigen function to the correlation matrix
+eigen(mat)
+```
+
+```
+## eigen() decomposition
+## $values
+## [1] 1.8 0.2
+## 
+## $vectors
+##           [,1]       [,2]
+## [1,] 0.7071068 -0.7071068
+## [2,] 0.7071068  0.7071068
+```
+
+---
+
+# Plot raw data
+&lt;img src="dapr3_factor_analysis_2_files/figure-html/unnamed-chunk-6-1.png" width="450" height="450" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Add eigenvectors
+&lt;img src="dapr3_factor_analysis_2_files/figure-html/unnamed-chunk-7-1.png" width="450" height="450" style="display: block; margin: auto;" /&gt;
+
+---
+
+# What eigenvalues do when *r* = 0.80
+&lt;img src="dapr3_factor_analysis_2_files/figure-html/unnamed-chunk-8-1.png" width="450" height="450" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Eigenvector 1 maximizes variance explained
+&lt;img src="dapr3_factor_analysis_2_files/figure-html/unnamed-chunk-9-1.png" width="450" height="450" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Eigenvector 2 maximizes variance explained
+&lt;img src="dapr3_factor_analysis_2_files/figure-html/unnamed-chunk-10-1.png" width="450" height="450" style="display: block; margin: auto;" /&gt;
+---
+
+# Eigenvalues and variance
++ In each situation, the eigenvalues we obtained for the correlation
+  ended up being equal to the number of variables
+  + `\(r=0.00\)`: `\(\lambda_{1}+\lambda_{2}=1+1=2=p\)`
+  + `\(r=0.80\)`: `\(\lambda_{1}+\lambda_{2}=1.8+0.2=2=p\)`
+
+
++ This is a general rule for eigenvalues
+	+ It has to do with the matrix algebra of eigendecomposition
+	+ You don't need to know the details, but they can be made
+      available if you're interested
+---
+
+# Eigenvalues and variances
++ Eigendecomposition has transformed the data, but the variance is the same
+  + Total variance is the sum of variances of your variables
+  + Sum of eigenvalues therefore must equal the total variance
+  + Another way to state this is:
+
+`$$\text{total variance} =
+\Sigma\lambda_{1}\lambda_{2}\cdots\lambda_{p}=p$$`
+
+
++ Any component `\(m\)` therefore accounts for a proportion of variance equal to:
+`$$\frac{\lambda_{m}}{\Sigma\lambda_{1}\lambda_{2}\cdots\lambda_{p}}=\frac{\text{component }m\text{'s eigenvalue}}{\text{total variance}}=\frac{\text{component }m\text{'s eigenvalue}}{p}$$`
+
+---
+
+# Eigenvalues and variances
++ Let's apply these formula to the two principal components analyses
+  we conducted
+  + `\(r=0.00\)`
+	  + Component 1 accounts for `\(1.00/2.00=0.50\)` or 50% of the variance
+	  + Component 2 accounts for `\(1.00/2.00=0.50\)` or 50% of the variance
+	+ `\(r=0.80\)`
+	  + Component 1 accounts for `\(1.80/2.00=0.90\)` or 90% of the variance
+	  + Component 2 accounts for `\(0.20/2.00=0.10\)` or 10% of the variance
+		
+
++ Bottom line: When variables are correlated, a smaller subset of
+  components can account for most of the variance, hence why principal
+  components analysis is called *data reduction*
+
+---
+
+# Features of principal components analysis solutions
++ There are many components as original variables, i.e., `\(p\)`
+  + This doesn't seem to make sense; wasn't the goal data reduction?
+  + Makes sense when you consider that the goal of PCA was to explain
+	*all* of the variance; doing that requires "extracting" `\(p\)`
+	components
++ Each component maximizes the amount of variance explained
+  + Components therefore decrease with respect to explained
+  variance
+  + Component 1 accounts for more variance than component 2, which
+  explains more than component 3, etc. What do you think the pattern
+  is with eigenvalues? 
++ Component are uncorrelated with one another
+  + You saw this in the plots: the axes were at right angles, that is,
+  *orthogonal*
+  + An `\(r=0.00\)` can be represented in geometry by a 90-degree angle
+
+---
+# Obtaining linear composites
++ A lot like calculating `\(\hat{y}\)` (predicted values) in linear
+  regression
+  + Weights are calculated, multiplied by observed values on the
+  variables for an individual, and summed
+  + Every individual now has a score on the component(s)
+  + These weights were in our eigenvector, so the equation for
+  calculating everybody's score on the first component is:
+
+`$$\mathbf{z}_{1}={x_1}{w_{11}}+{x_1}{w_{21}}+\dots+{w_{p1}}{x_p}$$`
+	
+---
+# Obtaining *standardized* linear composites
++ The previous formulation gives you raw scores
+  + Earlier component scores will have more variance than later
+    component scores
+  + For various reasons, that's not desirable
+  
+
++ We can get standardized scores by first standardizing our weights:
+`$$\tilde{w}_{ij}=\frac{w_{ij}}{\sqrt{\lambda_j}}$$` here, `\(w_{ij}\)` is
+an element in an eigenvector that relates variable `\(i\)` to component
+`\(j\)`
+
+---
+
+# Obtaining component *loadings*
++ Allow you to understand the structure of your questionnaire
+  + Loadings are presented in a table of p rows and m columns
+	  + Each cell indicates the strength of relationship between a
+	 variable and a component
+	  + Loadings range from -1 to +1
+	  + The higher the *absolute* loading, the stronger the association
+   + The sum of squared loadings for any variable on all components equals 1
+   + All variance in the variable is explained if we retain all components
+
+---
+
+# Obtaining component *loadings*
++ To get factor loadings, we scale the multiply the element of an
+  eigenvector relating variable `\(i\)` to component `\(j\)` by the square
+  root of component `\(j\)`'s eigenvalue
+`$$w^{*}_{ij}=w_{ij}{\sqrt{\lambda_j}}$$`
+
+
++ This scales the weights so that the resulting loadings of components
+onto variables are higher for components that have higher eigenvalues
+
+
++ Another way to state this is that you're giving more weight to
+ relationships between variables and components when those components
+ account for more variance
+
+---
+
+&lt;center&gt;
+# Don't Panic!
+&lt;/center&gt;
++ Remember, you won't have to manually compute *any* of this to run an analysis
+or to complete an assignment let alone memorize this!
+	+ The `principal` function, which was written for *R*, does this
+      stuff for you 
+	+ It's good to know these details so that you can understand, or at least
+	get the gist of, what is being done to your data
+
+
++ The remaining topics *won't* be covered in so much detail
+
+---
+# Number of components
++ Recall that the goal of PCA is to explain *all* the variance in a
+  set of items, however, to do so, you need to extract `\(p\)` components.
+  + This defeats the purpose of data *reduction*; we want to extract
+    fewer components
+	  + Doing this makes sense if we don't sacrifice *too much* in the
+	  way of explaining variance
+	  + Taking our example, explaining nine-tenths of the variance
+      with half the variables is a great trade-off; however, it's
+      usually not so clear
+	  
+	  
++ There are tools that can *help* us make this decision
+  + I said 'help' because there is no "correct" number of components
+  + We also need to rely also on our judgement
+	+ In light of what we know, does the set of components make sense?
+	+ Do they tell us anything about our theory about what we're measuring?
+
+---
+
+# Number of components
++ Different tools tend to lead to over- and under-extraction
+  + Under-extraction
+	+ Retaining fewer than the optimal number
+	+ Components are harder to interpret; smaller components are
+      "squashed together"
+  + Over-extraction
+	+ Retaining more than the optimal number
+	+ Components retained with only small number of primary loadings
+	+ Will often get components related to item difficulty and not the
+      constructs of interest
+	  
+	  
++ Some tools
+  + Kaiser criterion
+  + The scree plot
+  + Velicer's Minimum Average Partial method
+  + Parallel analysis
+  
+---
+# Simulation studies
++ Before moving on, it's worth knowing that much of what we know about
+  principal components analysis and factor analysis comes from
+  simulation studies
+  + Researchers create datasets that have known properties (number of
+    components, how closely components are related to items, etc.)
+  + Test how adequately certain methods recover these properties
+	
+
+---
+# The Kaiser criterion
++ Because there are as many eigenvalues as there are variables, the
+  mean eigenvalue will be 1. Therefore, retain any component, `\(m\)`, if
+  `\(\lambda_{m}&gt;1\)`
+  + This method performs `\(very\)` poorly
+  + Simulation studies show that this method nearly always leads to
+    over-extraction
+  + Yet it's *still* the default in a lot of stats packages!
+
+
++ **Never** use it!
+
+---
+
+# Scree plots
++ Scree is the rubble at the bottom of mountains and the like. If you
+  visit the Crags or Arthur's Seat, you will see it
+  + Plot the eigenvalues of the components in descending order
+  + The point at which there are "diminishing returns" and it makes
+  little sense to take out more components is the point at which there
+  is an 'elbow' in the plot
+  
+  
+  + Studies of simulated data find that the performance of scree plots
+    has been found to be inconsistent
+	+ Sometimes it is correct, sometimes it leads to under-extraction,
+      and other times it leads to over-extraction
+	+ This is because there is an element of subjectivity to
+      interpreting a scree plot
+
++ Not bad if used alongside other methods, but you shouldn't rely on it alone!
+	
+---
+
+
+```r
+library(psych)
+
+## Selecting participants who have complete Big Five Inventory data
+bfi &lt;- bfi[complete.cases(bfi[1:25]),1:25]
+
+## Producing scree plot
+scree(bfi, factors=F, main="")
+```
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="dapr3_factor_analysis_2_files/figure-html/BFI-1.png" alt="Scree plot of personality data: Where is the elbow?" width="350" height="350" /&gt;
+&lt;p class="caption"&gt;Scree plot of personality data: Where is the elbow?&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+# Minimum Average Partial (MAP) technique
++ The idea is that you want to stop extracting components when by doing
+  so you're no longer removing systematic variance
+  + To do this, you first extract one component, then two, then three,
+  etc., until you have done this `\(p\)`-1 times.
+  + After each step, you compute the average of the partial
+  correlations between all of the variables
+  + The number of components that yields the lowest value (the
+    minimum) is said to be the number of components
+		+ Extract too few and there will be remaining systematic
+		variance and MAP will be higher
+		+ Extract too many and you will be "fitting error"; also leads
+          to a higher MAP
+
+
++ Simulation studies show that this method tends to lead to under-extraction
+
+---
+
+
+```r
+library(psych)
+
+## Selecting participants who have complete Big Five Inventory data
+bfi &lt;- bfi[complete.cases(bfi[1:25]),1:25]
+
+## Getting MAP results using VSS function in R and saving to object
+map_results &lt;- VSS(bfi, plot=FALSE, method="pc", n=24)$map
+
+## Using the paste and which.min functions to report the number of
+## components that yields the lowest MAP
+paste("MAP is lowest for", which.min(map_results), "components")
+```
+
+```
+## [1] "MAP is lowest for 5 components"
+```
+---
+
+# Parallel analysis
++ The idea here is to conduct principal components analyses on random
+data that has the same number of participants and the same number of
+items
+  + After doing this many times (I do it 1000 times), plot the
+  distribution of the eigenvalues from these data sets
+  + Then compare eigenvalues from your real data to the random
+  ones, retaining only the components from real data if their
+  eigenvalues are higher than the random ones
+
+
++ Simulation studies show that parallel analysis does a good job of
+  recovering the right number of components from artificial data
+
+---
+
+
+```r
+fa.parallel(bfi[complete.cases(bfi[1:25]),1:25], fa="pc", main="", quant=.95)
+```
+
+&lt;img src="dapr3_factor_analysis_2_files/figure-html/parallel analysis-1.png" style="display: block; margin: auto;" /&gt;
+
+```
+## Parallel analysis suggests that the number of factors =  NA  and the number of components =  5
+```
+
+---
+
+# Number of components
++ There are more tools to help identify the number of components
+  + All have advantages and disadvantages
+  + Best strategy is to use multiple methods that you believe are
+  robust given your situation
+	  + How are the data distributed?
+	  + Is there likely to be a problem with under- or over-extraction?
+	  + How reliable are the data?
+	  + Do I expect any correlated methods?
+	  
+	  
++ Most important is how consistent the components are with what's
+  known and with theory
+
+---
+
+# Checking your first draft of your questionnaire
++ When checking data obtained using the first draft of your
+  questionnaire, one thing to check is the variables you chose to
+  measure some construct do measure that construct alone
+  + An initial indication comes from the component loadings
+	+ Does component A load on your measures of construct X?
+	+ Does component A load on your measures of constructs other than
+	X?
+	+ Do components other than A load on your measures of construct X?
+ 
+
++ Your answers should be 'yes', 'no', and 'no'. 
+  + If they are not, then there is a problem with one or more items or
+  with the theory from which the construct(s) were derived
+  + Depending on what you find, you'll need to revise or throw out
+    items, revise or throw out your theory, or both
+
+---
+
+## Example
++ We'll use PCA to examine the Big Five Inventory, which was developed
+  based on a well-established model of human personality
+  + Because there's not enough 'room', I will stick to the
+    extraversion and neuroticism items
+  + I'll use the `principal` function to do the analysis
+
+
++ We'll also about the loading matrix---sometimes called a lambda
+  matrix---along the way
+
+---
+|    |   PC1 |   PC2 | `\(h^2\)` | `\(u^2\)` |  com |
+|:---|------:|------:|------:|------:|-----:|
+| E1 |  0.44 | -0.55 |  0.50 |  0.50 | 1.91 |
+| E2 |  0.66 | -0.43 |  0.63 |  0.37 | 1.72 |
+| E3 | -0.42 |  0.55 |  0.48 |  0.52 | 1.88 |
+| E4 | -0.57 |  0.48 |  0.56 |  0.44 | 1.94 |
+| E5 | -0.40 |  0.54 |  0.45 |  0.55 | 1.84 |
+| N1 |  0.65 |  0.54 |  0.71 |  0.29 | 1.94 |
+| N2 |  0.64 |  0.52 |  0.68 |  0.32 | 1.91 |
+| N3 |  0.66 |  0.47 |  0.66 |  0.34 | 1.81 |
+| N4 |  0.72 |  0.14 |  0.54 |  0.46 | 1.07 |
+| N5 |  0.57 |  0.28 |  0.41 |  0.59 | 1.45 |
+
+PC1 and PC2 = component loadings; `\(h^2\)` = communalities, `\(u^2\)` =
+uniquenesses, com = complexities
+
+---
+
+# Definitions
++ Loadings are the size of associations between items and components
+  + How 'high' they should be before one considers them 'salient' depends on the research
+  + In personality research, depending on how reliable your measures
+        are considered 'salient' if they are `\(\ge\)` |.3| or |.4|
++ Communalities are sum of squared loadings across each row
+  + They tell you proportion of item variance that your components account for
+  + Uniquenesses equal `\(1-h^2\)`
+  + Complexity indicates the extent to which an item loads on one
+    component only; maximum is equal to the number of components
++ R provides extra information that I didn't display
+  + Various 'fit indices'
+  + Proportion of variance accounted for by each component
+	  + How do you think these are calculated?
+	  + Hint: It's similar to how the communalities are calculated
+
+---
+|    |       PC1 |       PC2 | `\(h^2\)` | `\(u^2\)` |  com |
+|:---|----------:|----------:|------:|------:|-----:|
+| E1 |  **0.44** | **-0.55** |  0.50 |  0.50 | 1.91 |
+| E2 |  **0.66** | **-0.43** |  0.63 |  0.37 | 1.72 |
+| E3 | **-0.42** |  **0.55** |  0.48 |  0.52 | 1.88 |
+| E4 | **-0.57** |  **0.48** |  0.56 |  0.44 | 1.94 |
+| E5 | **-0.40** |  **0.54** |  0.45 |  0.55 | 1.84 |
+| N1 |  **0.65** |  **0.54** |  0.71 |  0.29 | 1.94 |
+| N2 |  **0.64** |  **0.52** |  0.68 |  0.32 | 1.91 |
+| N3 |  **0.66** |  **0.47** |  0.66 |  0.34 | 1.81 |
+| N4 |  **0.72** |      0.14 |  0.54 |  0.46 | 1.07 |
+| N5 |  **0.57** |      0.28 |  0.41 |  0.59 | 1.45 |
+
+Many items have salient loadings (highlighed in red) of similar magnitudes on both
+components. This is known as having 'cross loadings'. It's often not ideal.
+
+---
+
+# Analytic rotation
++ You'd be forgiven for thinking that the *cross-loadings* from the
+  previous solution suggest it's time to revise/throw-out items or
+  your theory
+  + Don't panic!
+  + Can happen because the initial "position" of the axes is arbitrary
+  + Default of some statistics packages
+	+ *Not* the default for the `principal` function
+	+ I told R to keep the arbitrary position
+
+
++ If this is the problem, we can change the position of (rotate)
+  the reference axes
+
+---
+
+|    |      RC1 |       RC2 | `\(h^2\)` | `\(u^2\)` |  com |
+|:---|---------:|----------:|------:|------:|-----:|
+| E1 |     0.01 | **-0.71** |  0.50 |  0.50 | 1.00 |
+| E2 |     0.26 | **-0.75** |  0.63 |  0.37 | 1.24 |
+| E3 |     0.00 |  **0.69** |  0.48 |  0.52 | 1.00 |
+| E4 |    -0.16 |  **0.73** |  0.56 |  0.44 | 1.09 |
+| E5 |     0.01 |  **0.67** |  0.45 |  0.55 | 1.00 |
+| N1 | **0.84** |      0.03 |  0.71 |  0.29 | 1.00 |
+| N2 | **0.82** |      0.02 |  0.68 |  0.32 | 1.00 |
+| N3 | **0.81** |     -0.03 |  0.66 |  0.34 | 1.00 |
+| N4 | **0.66** |     -0.33 |  0.54 |  0.46 | 1.48 |
+| N5 | **0.63** |     -0.13 |  0.41 |  0.59 | 1.09 |
+
+There are next to no cross-loadings and complexities are overall
+low; N4: 'Often feel blue' is a possible exception, although it *is*
+consistent with the association between extraversion and higher well-being
+
+---
+
+# Analytic rotation
++ Categories
+  + Orthogonal
+	  + Includes varimax and quartimax rotations
+	  + Axes at right angles; correlations between components are zero
+	  + In example, I used a varimax rotation
+
+---
+
+&lt;img src="dapr3_factor_analysis_2_files/figure-html/rotation_2-1.png" style="display: block; margin: auto;" /&gt;
+&lt;center&gt;
+What could you do to bring axes even closer to the points?
+&lt;/center&gt;
+
+---
+
+# Analytic rotation
++ Categories
+  + Orthogonal
+	  + Includes varimax and quartimax rotations
+	  + Axes at right angles; correlations between components are zero
+	  + In example, I used a varimax rotation
+   + Oblique
+	 + Includes promax and oblimin rotations
+	 + Axes are not at right angles; correlations between components
+       are not zero
+	 + What happens when we apply an oblimin "rotation"?
+
+---
+
+|    |      TC1 |       TC2 | `\(h^2\)` | `\(u^2\)` | com |
+|:---|---------:|----------:|------:|------:|----:|
+| E1 |    -0.08 | **-0.72** |  0.50 |  0.50 | 1.0 |
+| E2 |     0.16 | **-0.75** |  0.63 |  0.37 | 1.1 |
+| E3 |     0.09 |  **0.70** |  0.48 |  0.52 | 1.0 |
+| E4 |    -0.06 |  **0.74** |  0.56 |  0.44 | 1.0 |
+| E5 |     0.10 |  **0.68** |  0.45 |  0.55 | 1.0 |
+| N1 | **0.85** |      0.07 |  0.71 |  0.29 | 1.0 |
+| N2 | **0.83** |      0.06 |  0.68 |  0.32 | 1.0 |
+| N3 | **0.82** |      0.01 |  0.66 |  0.34 | 1.0 |
+| N4 | **0.62** |     -0.31 |  0.54 |  0.46 | 1.5 |
+| N5 | **0.61** |     -0.10 |  0.41 |  0.59 | 1.1 |
+
+Again, there are next to no cross-loadings and complexities are
+overall low; compared to the varimax structure, in most cases, the
+high loadings are closer to 1.00 and the low loadings are closer to
+0.00
+
+---
+
+```
+## Loading required namespace: GPArotation
+```
+
+&lt;img src="dapr3_factor_analysis_2_files/figure-html/rotation_3-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# Analytic rotation
++ Rotation is about finding the most interpretable set of components
+
+
++ There is not a "unique" solution to this problem
+  + Rotations are mathematically indistinguishable 
+  + All you're doing is changing the reference point
+  + This problem is known as "rotational indeterminacy"
+  
+  
++ "Simple structure" was propopsed by Thurstone as the criterion
+  + Different means of rotation try to achieve this differently
+  + I won't get into the maths!
+
+---
+
+# Simple structure
++ Adapted from Sass and Schmitt 2011
+
+	1. Each variable (row) should have at least one zero loading 
+
+	2. Each factor (column) should have same number of zero’s as there are
+   factors
+   
+   3. Every pair of factors (columns) should have several variables which
+   load on one factor, but not the other 
+   
+   4. Whenever more than four factors are extracted, each pair of factors
+   (columns) should have a large proportion of variables which do not
+   load on either factor
+   
+   5. Every pair of factors should have few variables which load on both
+   factors
+  
+---
+
+# Question to ponder (and post about)
++ After rotation, the `principal` function labels each component a 
+  rotated component (RC) instead of a principal component (PC)
+  + This is because after rotating principal components, they are no
+  longer principal components?
+  + Hint: Think about what a principal component tries to do and then
+    see whether the rotated components manage to do that
+---
+
+# Summary
++ You can use eigendecomposition to compute principal components,
+  which can summarize your data using fewer variables and without
+  sacrificing too much explanatory power
+  + Rotating components is often necessary to clarify their meaning
+  + Your judgement is involved in *all* major steps
+
+
++ Principal components analysis has many benefits
+  + By using these components instead of your raw data, you reduce
+  the Type I error rate
+  + You can find poorly-behaving items and learn something about what
+    it is you're measuring
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Repeated measures</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<script>
+function toggle_visibility(id1, id2) {
+var e = document.getElementById(id1);
+var f = document.getElementById(id2);
+e.style.display = ((e.style.display!='none') ? 'none' : 'block');
+if(f.classList.contains('fa-plus')) {
+    f.classList.add('fa-minus')
+    f.classList.remove('fa-plus')
+} else {
+    f.classList.add('fa-plus')
+    f.classList.remove('fa-minus')
+}
+}
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="assets/style-labs.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"><strong>RMS2</strong></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="intro_tidyverse.html">RMS2 starts here</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Regression models
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="01_slr.html">1/1: Simple linear regression</a>
+    </li>
+    <li>
+      <a href="02_mlr.html">1/2: Multiple regression basics</a>
+    </li>
+    <li>
+      <a href="03_mlr_int.html">1/3: Interactions</a>
+    </li>
+    <li>
+      <a href="04_mlr_assumpt.html">1/4: Assumptions and diagnostics</a>
+    </li>
+    <li>
+      <a href="05_mlr_eval.html">1/5: Model fit, model comparison, and model selection</a>
+    </li>
+    <li class="dropdown-header">1/6: Break week</li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Models for experimental data
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="07_anova.html">1/7: ANOVA and contrasts</a>
+    </li>
+    <li>
+      <a href="08_factorial_anova.html">1/8: Factorial ANOVA</a>
+    </li>
+    <li>
+      <a href="09_repeated_measures.html">1/9: Repeated measures</a>
+    </li>
+    <li>
+      <a href="10_surveys_pca.html">1/10: Surveys and  PCA</a>
+    </li>
+    <li>
+      <a href="11_fa.html">1/11: Exploratory factor analysis</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Extra
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="intro_r_rstudio.html">Getting started with R &amp; RStudio</a>
+    </li>
+    <li>
+      <a href="extra_writeup.html">Example Write-up</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Repeated measures</h1>
+
+</div>
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>In last week’s exercises, we considered a data set where different amnesiac, Huntingtons, or control individuals were randomly assigned to one of three tasks (grammar, classification, or recognition).</p>
+<p>In such design, the observations were independent as they corresponded to different individuals.</p>
+<p>We also discussed that a more efficient design would have entailed asking all patients to perform all three tasks. However, in such case, the data would not be independent as the three scores corresponding to the same patient would clearly be correlated.</p>
+<p><strong>Repeated measures</strong> is a term used when the same entities make up multiple observations in a dataset. This might be data collected from participants across multiple conditions, trials, items, or timepoints.</p>
+<p>In today’s lab we will analyse in more details data sets involving repeated measures on the same individuals, and use appropriate methods to draw conclusions from such data.</p>
+<p>Before we get started, make sure to install the <code>ez</code> package via</p>
+<pre><code>install.packages(&quot;ez&quot;)</code></pre>
+</div>
+<div id="one-way-design" class="section level1">
+<h1>One-way design</h1>
+<p>The data we’re going to use is from a study of how driving speed is influenced by the music which is playing.</p>
+<p>Researchers conducted an experiment in which they tasked 30 participants with driving a section of motorway, while listening to 3 different genres of.
+Researchers measured the average speed at which participants drove for each song.</p>
+<div class="frame">
+<p><strong>Things to think about:</strong></p>
+<p>Think about if you were designing this experiment. Think about things like making sure each song was the same length, the order of the songs for each participant, etc. You can control things like this in the experiment design, to save you having to do so in the analysis.</p>
+</div>
+<p>The data involved the following variables:</p>
+<ul>
+<li><code>sub</code>: Participant ID (categorical)</li>
+<li><code>jazz</code>: Driving speed (mph) while listening to jazz (numeric)</li>
+<li><code>metal</code>: Driving speed (mph) while listening to metal (numeric)</li>
+<li><code>rap</code>: Driving speed (mph) while listening to rap (numeric)</li>
+</ul>
+<p><strong>Download link</strong></p>
+<p><a href="https://uoepsy.github.io/data/driving.csv">Download the data here</a> or by copying and pasting this link: <a href="https://uoepsy.github.io/data/driving.csv" class="uri">https://uoepsy.github.io/data/driving.csv</a></p>
+<div class="question-begin">
+Question 1
+</div>
+<div class="question-body">
+<ul>
+<li>Load the tidyverse library.</li>
+<li>Read the data set into R, and call it <code>driving</code>.</li>
+<li>Check that the data were correctly read into R, and make sure that variables are coded correctly (e.g., categorical variables should be factors)</li>
+</ul>
+<p class="question-end">
+</p>
+</div>
+<div class="solution-begin">
+Solution <span id="sol-start-102" class="fa fa-plus solution-icon clickable" onclick="toggle_visibility(&#39;sol-body-102&#39;, &#39;sol-start-102&#39;)"></span>
+</div>
+<div id="sol-body-102" class="solution-body" style="display: none;">
+<pre class="r"><code>library(tidyverse)
+
+driving &lt;- read_csv(&quot;https://uoepsy.github.io/data/driving.csv&quot;)
+
+head(driving)</code></pre>
+<pre><code>## # A tibble: 6 x 5
+##      X1 sub         jazz metal   rap
+##   &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1     1 subject_1   83.3  73.7  73.9
+## 2     2 subject_10  84.3  88.6  76.4
+## 3     3 subject_11  64.3  62.2  62.4
+## 4     4 subject_12  66.3  64.6  68.0
+## 5     5 subject_13  78.5  73.4  66.8
+## 6     6 subject_14  80.9  69.8  68.9</code></pre>
+<p>There seems to be a column with the row names. We don’t need it, so we can either remove it:</p>
+<pre class="r"><code>driving &lt;- driving %&gt;%
+    select(-X1)</code></pre>
+<p>or transform the column to actual row names:</p>
+<pre class="r"><code>driving &lt;- driving %&gt;% 
+    column_to_rownames(var = &quot;X1&quot;)
+
+head(driving)</code></pre>
+<pre><code>##          sub     jazz    metal      rap
+## 1  subject_1 83.26913 73.65137 73.89493
+## 2 subject_10 84.32679 88.61287 76.37365
+## 3 subject_11 64.26496 62.23866 62.38876
+## 4 subject_12 66.34386 64.55997 68.02181
+## 5 subject_13 78.48570 73.44109 66.76785
+## 6 subject_14 80.86178 69.75204 68.89510</code></pre>
+</div>
+<p class="solution-end">
+</p>
+<p><br></p>
+<p>The data are in the so-called <strong>wide</strong> format. The three columns named “jazz”, “metal”, and “rap”, all contain numbers referring to the same quantity: driving speed.</p>
+<p>On the other hand, in a data set in <strong>long</strong> format, each column corresponds to a single variable.
+The following code converts the wide dataset to long format. As you can see, each column corresponds to a single variable. “sub” is the subject identifier, “genre” is the music genre, and “speed” is the driving speed.</p>
+<pre class="r"><code>driving &lt;- driving %&gt;% 
+    pivot_longer(c(jazz, metal, rap), names_to = &quot;genre&quot;, values_to = &quot;speed&quot;)
+
+head(driving)</code></pre>
+<pre><code>## # A tibble: 6 x 3
+##   sub        genre speed
+##   &lt;chr&gt;      &lt;chr&gt; &lt;dbl&gt;
+## 1 subject_1  jazz   83.3
+## 2 subject_1  metal  73.7
+## 3 subject_1  rap    73.9
+## 4 subject_10 jazz   84.3
+## 5 subject_10 metal  88.6
+## 6 subject_10 rap    76.4</code></pre>
+<p><br></p>
+<div class="question-begin">
+Question 2
+</div>
+<div class="question-body">
+<p><strong>Descriptive statistics.</strong></p>
+<p>Check again whether or not all categorical variables are correctly encoded as factors.</p>
+<p>Find the mean, standard deviation, min, and max of the driving speeds for each genre of music.</p>
+<p class="question-end">
+</p>
+</div>
+<div class="solution-begin">
+Solution <span id="sol-start-103" class="fa fa-plus solution-icon clickable" onclick="toggle_visibility(&#39;sol-body-103&#39;, &#39;sol-start-103&#39;)"></span>
+</div>
+<div id="sol-body-103" class="solution-body" style="display: none;">
+<p>Genre should be a factor but it is of type character. We can fix it:</p>
+<pre class="r"><code>driving$genre &lt;- as.factor(driving$genre)
+
+head(driving)</code></pre>
+<pre><code>## # A tibble: 6 x 3
+##   sub        genre speed
+##   &lt;chr&gt;      &lt;fct&gt; &lt;dbl&gt;
+## 1 subject_1  jazz   83.3
+## 2 subject_1  metal  73.7
+## 3 subject_1  rap    73.9
+## 4 subject_10 jazz   84.3
+## 5 subject_10 metal  88.6
+## 6 subject_10 rap    76.4</code></pre>
+<p>Let’s compute the table of summary statistics:</p>
+<pre class="r"><code>driving %&gt;%
+    group_by(genre) %&gt;%
+    summarise(
+        across(speed, .fns = list(M = mean, SD = sd, min = min, max = max))
+    )</code></pre>
+<pre><code>## # A tibble: 3 x 5
+##   genre speed_M speed_SD speed_min speed_max
+##   &lt;fct&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+## 1 jazz     78.6     9.71      63.5     101. 
+## 2 metal    71.2     9.68      50.3      88.6
+## 3 rap      71.5     8.26      57.7      92.5</code></pre>
+</div>
+<p class="solution-end">
+</p>
+<div class="question-begin">
+Question 3
+</div>
+<div class="question-body">
+<p><strong>Relationship between the variables.</strong></p>
+<p>Create a boxplot displaying how the distribution of driving speed varies according to the music played.</p>
+<p class="question-end">
+</p>
+</div>
+<div class="solution-begin">
+Solution <span id="sol-start-104" class="fa fa-plus solution-icon clickable" onclick="toggle_visibility(&#39;sol-body-104&#39;, &#39;sol-start-104&#39;)"></span>
+</div>
+<div id="sol-body-104" class="solution-body" style="display: none;">
+<pre class="r"><code>ggplot(driving, aes(genre, speed, color = genre)) +
+    geom_boxplot()</code></pre>
+<p><img src="09_repeated_measures_files/figure-html/unnamed-chunk-8-1.png" width="70%" style="display: block; margin: auto;" /></p>
+</div>
+<p class="solution-end">
+</p>
+<p>We analyse data which contain multiple measurements from the same individual using the <code>ezANOVA()</code> function from the <code>ez</code> package.
+This function takes into account the correlation between measurements taken on the same individual. A standard <code>lm()</code> instead, would require an independence assumption which is clearly violated by study design.</p>
+<div class="question-begin">
+Question 4
+</div>
+<div class="question-body">
+<p>Run the following code and interpret the output:</p>
+<pre class="r"><code>library(ez)
+
+mdl &lt;- ezANOVA(data = driving, dv = speed, wid = sub, within = genre, 
+               detailed = TRUE, type = 3)
+mdl</code></pre>
+<pre><code>## $ANOVA
+##        Effect DFn DFd        SSn      SSd           F            p p&lt;.05
+## 1 (Intercept)   1  29 489908.260 3444.095 4125.130421 8.039514e-33     *
+## 2       genre   2  58   1063.793 3980.966    7.749372 1.040625e-03     *
+##         ges
+## 1 0.9850703
+## 2 0.1253164
+## 
+## $`Mauchly&#39;s Test for Sphericity`
+##   Effect         W         p p&lt;.05
+## 2  genre 0.8982085 0.2224744      
+## 
+## $`Sphericity Corrections`
+##   Effect       GGe       p[GG] p[GG]&lt;.05       HFe       p[HF] p[HF]&lt;.05
+## 2  genre 0.9076127 0.001556551         * 0.9648188 0.001212857         *</code></pre>
+<p>Pay careful attention to the sphericity assumption. Remember, we want equal variance. A p-value for sphericity lower than the critical value indicates that we can reject the assumption that the variance of the differences between levels are equal.</p>
+<p class="question-end">
+</p>
+</div>
+<div class="solution-begin">
+Solution <span id="sol-start-105" class="fa fa-plus solution-icon clickable" onclick="toggle_visibility(&#39;sol-body-105&#39;, &#39;sol-start-105&#39;)"></span>
+</div>
+<div id="sol-body-105" class="solution-body" style="display: none;">
+<div class="int">
+<p>Mauchly’s test indicated that the assumption of sphericity was not violated (<span class="math inline">\(p = .222\)</span>).
+The uncorrected (sphericity assumed) effect of genre of music on driving speed was statistically significant, <span class="math inline">\(F(2,58) = 7.749\)</span>, <span class="math inline">\(p = .001\)</span>.</p>
+</div>
+</div>
+<p class="solution-end">
+</p>
+</div>
+<div id="factorial-design" class="section level1">
+<h1>Factorial design</h1>
+<p>We’re now going to do the same thing but with some other data.
+This data is from a multi-domain cognitive screen tool, which was conducted on 50 participants at age 65, and then again at ages 75 and 85. Scores on the screening tool can range from 0 to 100.</p>
+<p>The measured variables are:</p>
+<ul>
+<li><code>sub</code>: Participant ID (categorical)</li>
+<li><code>bilingualism</code>: Whether the participants was bilingual or not (categorical, bilingual or not bilingual)</li>
+<li><code>age</code>: Participant’s age when the test was taken (3 groups, can be considered categorical)</li>
+<li><code>score</code>: Score on a cognitive test (numeric)</li>
+</ul>
+<p><strong>Download link</strong></p>
+<p><a href="https://uoepsy.github.io/data/cog.csv">Download the data here</a> or by copying and pasting this link: <a href="https://uoepsy.github.io/data/cog.csv" class="uri">https://uoepsy.github.io/data/cog.csv</a></p>
+<div class="question-begin">
+Question 5
+</div>
+<div class="question-body">
+<p>Read the data set into R, and call it <code>cog</code>.</p>
+<p>Make sure that categorical variables are correctly encoded as factors.</p>
+<p class="question-end">
+</p>
+</div>
+<div class="solution-begin">
+Solution <span id="sol-start-106" class="fa fa-plus solution-icon clickable" onclick="toggle_visibility(&#39;sol-body-106&#39;, &#39;sol-start-106&#39;)"></span>
+</div>
+<div id="sol-body-106" class="solution-body" style="display: none;">
+<pre class="r"><code>cog &lt;- read_csv(&#39;https://uoepsy.github.io/data/cog.csv&#39;)
+head(cog)</code></pre>
+<pre><code>## # A tibble: 6 x 4
+##   sub       bilingualism   age score
+##   &lt;chr&gt;     &lt;chr&gt;        &lt;dbl&gt; &lt;dbl&gt;
+## 1 subject_1 bilingual       65  85.4
+## 2 subject_1 bilingual       75  76.5
+## 3 subject_1 bilingual       85  72.6
+## 4 subject_2 bilingual       65  89.2
+## 5 subject_2 bilingual       75  69.5
+## 6 subject_2 bilingual       85  78.5</code></pre>
+<pre class="r"><code>cog &lt;- cog %&gt;%
+    mutate(age = as.factor(age),
+           bilingualism = as.factor(bilingualism))
+head(cog)</code></pre>
+<pre><code>## # A tibble: 6 x 4
+##   sub       bilingualism age   score
+##   &lt;chr&gt;     &lt;fct&gt;        &lt;fct&gt; &lt;dbl&gt;
+## 1 subject_1 bilingual    65     85.4
+## 2 subject_1 bilingual    75     76.5
+## 3 subject_1 bilingual    85     72.6
+## 4 subject_2 bilingual    65     89.2
+## 5 subject_2 bilingual    75     69.5
+## 6 subject_2 bilingual    85     78.5</code></pre>
+</div>
+<p class="solution-end">
+</p>
+<div class="question-begin">
+Question 6
+</div>
+<div class="question-body">
+<p>How is this study design related to “repeated measures”?</p>
+<ol style="list-style-type: lower-alpha">
+<li>data is collected from participants in multiple conditions</li>
+<li>data is collected from participants on multiple trials</li>
+<li>data is collected from participants at multiple time points.</li>
+</ol>
+<p class="question-end">
+</p>
+</div>
+<div class="solution-begin">
+Solution <span id="sol-start-107" class="fa fa-plus solution-icon clickable" onclick="toggle_visibility(&#39;sol-body-107&#39;, &#39;sol-start-107&#39;)"></span>
+</div>
+<div id="sol-body-107" class="solution-body" style="display: none;">
+<p>The correct answer is (c).</p>
+<p>For each subject, we have data collected over time, at multiple timpoints: age = 65, 75, and 85.</p>
+</div>
+<p class="solution-end">
+</p>
+<div class="question-begin">
+Question 7
+</div>
+<div class="question-body">
+<p>Create a boxplot of scores by age and whether the subject was bilingual or not.</p>
+<p>Create an interaction plot using the <code>stat_summary()</code> function.</p>
+<p class="question-end">
+</p>
+</div>
+<div class="solution-begin">
+Solution <span id="sol-start-108" class="fa fa-plus solution-icon clickable" onclick="toggle_visibility(&#39;sol-body-108&#39;, &#39;sol-start-108&#39;)"></span>
+</div>
+<div id="sol-body-108" class="solution-body" style="display: none;">
+<pre class="r"><code>ggplot(data = cog, aes(x = age, y = score, color = bilingualism)) +
+    geom_boxplot() + 
+    labs(x = &quot;Participant&#39;s age&quot;, y = &quot;Score&quot;, color = &quot;Bilingualism&quot;,
+         title = &quot;Scores on a multi-domain cognitive screening by age and bilingualism&quot;)</code></pre>
+<p><img src="09_repeated_measures_files/figure-html/unnamed-chunk-11-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>cog_stats &lt;- cog %&gt;%
+    group_by(age, bilingualism) %&gt;%
+    summarise(M = mean(score),
+              SE = sd(score) / sqrt(n()),
+              LWR = M - SE,
+              UPR = M + SE)
+
+ggplot(data = cog_stats, aes(x = age, y = M, color = bilingualism)) +
+    geom_pointrange(aes(ymin = LWR, ymax = UPR)) + 
+    geom_line(aes(x = as.numeric(age)))  +
+    labs(x = &quot;Participant&#39;s age&quot;, y = &quot;Score&quot;, color = &quot;Bilingualism&quot;)</code></pre>
+<p><img src="09_repeated_measures_files/figure-html/unnamed-chunk-12-1.png" width="70%" style="display: block; margin: auto;" /></p>
+</div>
+<p class="solution-end">
+</p>
+<p><br></p>
+<p>The following code runs a factorial repeated measures ANOVA with a withing subject factor (<code>age</code>) and a between subject factor (<code>bilingualism</code>):</p>
+<pre class="r"><code>mdl2 &lt;- ezANOVA(cog, dv = score, between = bilingualism, wid = sub, within = age, 
+                detailed = TRUE, type = 3)
+mdl2</code></pre>
+<pre><code>## $ANOVA
+##             Effect DFn DFd         SSn       SSd           F            p p&lt;.05
+## 1      (Intercept)   1  48 792245.5707 16559.488 2296.434959 3.405975e-42     *
+## 2     bilingualism   1  48    798.5543 16559.488    2.314722 1.347152e-01      
+## 3              age   2  96   5253.9635  4884.415   51.631617 5.977433e-16     *
+## 4 bilingualism:age   2  96    483.4658  4884.415    4.751103 1.077619e-02     *
+##          ges
+## 1 0.97364609
+## 2 0.03590225
+## 3 0.19679338
+## 4 0.02204851
+## 
+## $`Mauchly&#39;s Test for Sphericity`
+##             Effect         W            p p&lt;.05
+## 3              age 0.5795532 2.708277e-06     *
+## 4 bilingualism:age 0.5795532 2.708277e-06     *
+## 
+## $`Sphericity Corrections`
+##             Effect       GGe        p[GG] p[GG]&lt;.05       HFe        p[HF]
+## 3              age 0.7040038 6.291138e-12         * 0.7189259 3.940518e-12
+## 4 bilingualism:age 0.7040038 2.136818e-02         * 0.7189259 2.064180e-02
+##   p[HF]&lt;.05
+## 3         *
+## 4         *</code></pre>
+<p>The uncorrected (sphericity assumed) effect of age on test scores is statistically significant, <span class="math inline">\(F(2,96)=51.63, p&lt;.001\)</span>.
+However, Mauchly’s test has a p-value &lt; .001. This indicates that the variances of differences between the different within-subject conditions aren’t equal (this is the variances of differences between different ages).</p>
+<p>One thing we can do is apply a correction to the p-value.</p>
+<p>Fortunately, <code>ezANOVA</code> has already done this for us - it provides two: the Greenhouse-Geisser and Huynh-Fieldt corrections.</p>
+<p>These corrections are applied to the denominator degrees of freedom of the F-ratio (the <code>Dfd</code> column of the ANOVA output), which in turn changes the p-value.
+All you have to do is multiply the degrees of freedom (for age above, this is 96) by the correction (the <code>GGe</code> and <code>HFe</code> values), and report the corrected p-values (<code>p[GG]</code> and <code>p[HFe]</code>), like so:</p>
+<p>The Greenhouse-Geisser corrected effect of age on test scores was significant, <span class="math inline">\(F(2,67.58) = 51.63, p&lt;.001\)</span>.</p>
+<p>The Huynh-Fieldt corrected effect of age on test scores was significant, <span class="math inline">\(F(2,69.02) = 51.63, p &lt; .001\)</span>.</p>
+<p>The repeated measures ANOVA gives us one way of accommodating for this in our analysis. However, it has quite strict assumptions (for instance, the sphericity assumption which was violated above).</p>
+<p><br></p>
+<div class="question-begin">
+Question 8
+</div>
+<div class="question-body">
+<p>Provide similar interpretation on whether bilingualism and the interaction between age and bilingualism impact scores on a multi-domain cognitive screening test?</p>
+<p class="question-end">
+</p>
+</div>
+<div class="solution-begin">
+Solution <span id="sol-start-109" class="fa fa-plus solution-icon clickable" onclick="toggle_visibility(&#39;sol-body-109&#39;, &#39;sol-start-109&#39;)"></span>
+</div>
+<div id="sol-body-109" class="solution-body" style="display: none;">
+<p>The uncorrected (sphericity assumed) effect of bilingualism on test scores is not statistically significant, <span class="math inline">\(F(1, 48) = 2.31, p = .135\)</span>.</p>
+<p>The uncorrected (sphericity assumed) effect of the interaction between age and bilingualism on test scores is statistically significant, <span class="math inline">\(F(2, 96) = 4.75, p = .011\)</span>.</p>
+<p>However, Mauchly’s test has a p-value &lt; .001. This indicates that the variances aren’t equal across the different combinations of bilingualism and age.</p>
+<p>The Greenhouse-Geisser corrected effect of the interaction between bilingualism and age on test scores was significant, <span class="math inline">\(F(2, 67.58) = 4.75, p = .021\)</span>.</p>
+<p>The Huynh-Fieldt corrected effect of the interaction between bilingualism and age on test scores was significant, <span class="math inline">\(F(2,69.02) = 4.75, p = .021\)</span>.</p>
+</div>
+<p class="solution-end">
+</p>
+<!-- Formatting -->
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;">
+
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

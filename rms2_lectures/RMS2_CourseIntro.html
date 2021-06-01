@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Course Introduction</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="STATS TEAM" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# <b>Course Introduction </b>
+## RMS2<br><br>
+### STATS TEAM
+### Department of Psychology<br>The University of Edinburgh
+### AY 2020-2021
+
+---
+
+
+
+
+
+
+
+
+
+# In this intro...
++ The RMS2 team
+
+--
+
++ What each week will look like.
+
+--
+
++ Expectations
+
+
+---
+# The Team
++ Tom Booth (CO)
++ Alex Doumas
++ Alex Weiss
++ Jo King
++ Umberto Noe
++ Aja Murray
++ Wonderful tutors (lots)
+
+---
+# RMS2 
++ In RMS2, we will teach you how to...
+
+--
+
+  + Run and interpret linear models for observational and experimental designs
+
+--
+
+  + Run and interpret repeated measures designs
+  
+--
+
+  + Run and interpret factor analysis and principal components analysis
+
+
+---
+# Learning Outcomes
+1. Understand multiple regression for continuous outcomes including interactions, interpretation, model assumptions, and when models should be applied.
+
+2. Understand the relationship between ANOVA and regression under the general linear model and be able to implement basic coding schemes for categorical predictors.
+
+3. Understand the principles of scale construction and data reduction methods including interpretation, model assumptions and methods to assess them.
+
+4. Use R to practically conduct the analytic methods taught in the course.
+
+5. Present and interpret the results of the analytic methods taught in the course.
+
+
+---
+# Who you are...
+
++ Psychology Y3 students
+
+--
+
++ Psychology Y4 students who were abroad in 19-20
+
+--
+
++ Intercalating medics
+
+--
+
++ Perhaps some visitors from overseas
+
+--
+
++ And there are a lot of you!
+
+
+
+---
+# The Structure
++ We are on-line, so this will look a little different to normal.
+
+--
+
++ **Lectures**
+  + Equivalent of ~2hr of live lecture, broken into shorter chunks
+  + The chunks will be linked with tasks.
+  + Some weeks additional background and recap material will also be provided.
+
++ **Independent study labs**
+  + Structured reading and exercises with R
+  + Equivalent of ~2-3 hrs per week
+  
+--
+
++ **Supported by**
+  + In person on-line office hours (see LEARN for times)
+  + Discussion boards
+
+???
++ Requires you to work steadily and consistently across the year. 
++ It builds, and it is hard to cram.
++ To help you build this study skills, course has a specific assessment structure.
+
+
+---
+# The Assessment 
++ **Weekly quizzes** (25%)
+  + 10 quizzes in total 
+  + Quiz 1 is a practices.
+  + The rest comprise your grade.
+  + Mark is the average of your best 7/9 scores.
+
+--
+
++ **Coursework report** (75%)
+  + Provided a dataset and some questions
+  + Task is to construct models to answer the questions, describe them, run them, report the results.
+  + Will require use of multiple approaches from class
+
+???
+Key point to make is the little and often principle
+
+---
+# Materials
++ All of your materials for each week will be within the weekly folders on LEARN.
+
+--
+
++ It will contain:
+  + A playlist of recordings
+  + Slide decks
+  + Links to lab material
+  + Links to the weekly quizzes
+  + Any comments or specific instructions for the week
+  + Links to discussion boards
+  + Reading (all freely available online)
+
+--
+
++ The weekly folders will become available incrementally.
+
+---
+# What you can expect from us
+1. We will work hard to help you learn.
+
+2. We will be open and communicate with you.
+
+3. We will be polite, respectful and treat you like adults.
+
+
+---
+# What we expect of you
+1. You work hard.
+
+2. That you talk to me and the teaching team.
+
+3. That you are polite, and respect the teaching team and your classmates.
+
+4. Try and have fun.
+
+
+---
+# A brief word on engagement
++ It is going to be a different year for everyone
+
+--
+
++ We are very keen to make sure everyone succeeds. 
+
+--
+
++ To do that, we need to know when people are struggling. 
+
+--
+
++ We will keep an eye on this in a number of ways:
+  + Presence in OH
+  + Engagement with material (watching recordings, discussion boards etc.)
+  + Weekly quiz performance.
+  
+---
+class: center, middle
+# And that is it for this intro!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

@@ -1,0 +1,2 @@
+# I'm testing to see if I can get magit working properly
+# Adding some more text

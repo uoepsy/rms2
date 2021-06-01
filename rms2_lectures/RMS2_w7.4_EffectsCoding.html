@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Week 7: Effects coding</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="TOM BOOTH &amp; ALEX DOUMAS" />
+    <script src="libs/kePrint/kePrint.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# <b>Week 7: Effects coding </b>
+## RMS2<br><br>
+### TOM BOOTH &amp; ALEX DOUMAS
+### Department of Psychology<br>The University of Edinburgh
+### AY 2020-2021
+
+---
+
+
+
+
+
+
+
+
+
+
+# Topics for today
+
++ Last time we looked at the `\(F\)`-test in one-way ANOVA and linear models
+
++ This time we are going to consider contrasts and `\(\beta\)` coefficients
+
+---
+# Looking beneath the F-test
++ The `\(F\)`-test gives us an overall test of the model, or the effect of an experimental condition.
+
++ But we may want to know something more specific.
+  + Differences between specific groups or sets of groups.
+
++ In ANOVA we talk about...
+  + contrasts &amp; planned comparisons
+  + post-hoc test
+
++ So how do we approach these from the linear model perspective?
+
+---
+# Contrasts and Planned comparisons
++ Sometimes we want to make comparisons between pairs of things.
+  + Treatment A vs Treatment B
+  + Treatment A vs (Treatment B &amp; Treatment C) etc.
+
++ This can be done...
+  + For a set of specific comparisons (confirmatory)
+  + For all possible comparisons (exploratory)
+  
++ We achieve this via assigning weights to groups.
+
++ May sound complicated, but we have already seen this in action this year
+  
+---
+# Dummy coding
++ Also called reference group coding
+
++ Create `\(k\)`-1 dummy variables/contrasts
+  + where `\(k\)` is the number of levels of the categorical predictor
+
++ Assign reference group 0 on all dummies.
+
++ Assign 1 to the focal group.
+
++ Enter the dummies into the linear model and they code the difference in means between the focal group/level and the reference.
+
++ We are going to use `\(g\)` from here on to be explicit these are experimental groups.
+  + But if we think in terms of the categorical variables produced by a design `\(g = k\)`
+
+---
+# Why do we need a reference group?
++ Consider our example.
+
++ We have three groups each given a specific Treatment A, B or C
+
++ We want a model that represents our data (observations), but all we "know" are groups. So;
+
+`$$y_{ij} = \mu_i + \epsilon_{ij}$$`
+
++ Where 
+  + `\(y_{ij}\)` are the individual observations
+  + `\(\mu_i\)` is the mean of group `\(i\)` and
+  + `\(\epsilon_{ij}\)` is the individual deviation from that mean.
+
+
+???
++ And this hopefully makes sense.
+  + Given we know someone's group, our best guess is the mean
+  + But people wont all score the mean, so there is some deviation for every person.
+
+
+---
+# Why do we need a reference group?
++ An alternative way to present this looks much more like our linear model:
+
+`$$y_{ij} = \beta_0 + \underbrace{(\mu_{i} - \beta_0)}_{\beta_i} + \epsilon_{ij}$$`
++ Where 
+  + `\(y_{ij}\)` are the individual observations
+  + `\(\beta_0\)` is an estimate of reference/overall average
+  + `\(\mu_i\)` is the mean of group `\(i\)` 
+  + `\(\beta_1\)` is the difference between the reference and the mean of group `\(i\)`, and
+  + `\(\epsilon_{ij}\)` is the individual deviation from that mean.
+
+---
+# Why do we need a reference group?
++ We can take expectations and write this both generally:
+
+$$\mu_i = \beta_0 + \beta_i $$
+
++ or for the specific groups (in our case 3):
+
+`$$\mu_{treatmentA} = \beta_0 + \beta_{1A}$$`
+
+`$$\mu_{treatmentB} = \beta_0 + \beta_{2B}$$`
+
+`$$\mu_{treatmentC} = \beta_0 + \beta_{3C}$$`
+
++ **The problem**: we have four parameters ( `\(\beta_0\)` , `\(\beta_{1A}\)` , `\(\beta_{2B}\)` , `\(\beta_{3C}\)` ) to model three group means ( `\(\mu_{TreatmentA}\)` , `\(\mu_{TreatmentB}\)` , `\(\mu_{TreatmentC}\)` )
+  + This means our model is under-identified.
+  + We are trying to estimate too much with too little.
+
+---
+# Constraints fix identification
++ Consider dummy coding.
+
++ Suppose we make Treatment A the reference. Then
+
+`$$\mu_{treatmentA} = \beta_0$$`
+
+`$$\mu_{treatmentB} = \beta_0 + \beta_{2B}$$`
+
+`$$\mu_{treatmentC} = \beta_0 + \beta_{3C}$$`
++ Fixed! 
+
++ We now only have three parameters ( `\(\beta_0\)` , `\(\beta_{2B}\)` , `\(\beta_{3C}\)` ) for the three group means ( `\(\mu_{TreatmentA}\)` , `\(\mu_{TreatmentB}\)` , `\(\mu_{TreatmentC}\)` )
+
+---
+# Why not always use dummy coding?
+
++ We might not always want to compare against a reference group.
+
++ Consider ANOVA sums of squares calculations.
+  + What do we compare the group means to?
+
+--
+
++ I hope you all shouted "the grand mean"!
+
++ And there is a form of constraint that allows us to do this.
+
+---
+# Sum to zero constraint
+
++ Instead of the reference constraint 
+
+`$$\mu_{reference} = \beta_0$$` 
+
++ we can apply what is referred to as the sum to zero constraint (again using example of three levels).
+
+`$$\beta_1 + \beta_2 + \beta_3 = 0$$`
+
++ There are two consequences of this constraint (see practical exercises for full explanation):
+
+`$$\beta_0 = \frac{\mu_1 + \mu_2 + \mu_3}{3}$$`
+
++ And
+
+`$$\mu_1 = \beta_0 + \beta_1$$`
+
+`$$\mu_2 = \beta_0 + \beta_2$$`
+
+`$$\mu_3 = \beta_0 - (\beta_1 + \beta_2)$$`
+
+---
+# OK, but how do we apply the constraint?
+
++ Answer, in the same way as we did with dummy coding.
+
++ We can create a set of sum to zero (sometimes called effect, or deviation) variables
+  + Or the equivalent contrast matrix.
+  
++ For effect code variables we:
+  + Create `\(g-1\)` variables
+  + For observations in the focal group, assign 1
+  + For observations in the last group, assign -1
+  + For all other groups assign 0
+
+
+---
+# Comparing coding matrices
+
+.pull-left[
+&lt;table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Level &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; D1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; D2 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Treatment A &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Treatment B &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Treatment C &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+`$$y_{ij} = \beta_0 + \beta_1D_1 + \beta_2D_2 + \epsilon_{ij}$$`
+
+]
+
+
+.pull-right[
+
+&lt;table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Level &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; E1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; E2 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Treatment A &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Treatment B &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Treatment C &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+`$$y_{ij} = \beta_0 + \beta_1E_1 + \beta_2E_2 + \epsilon_{ij}$$`
+
+]
+
+---
+# Sum to zero/effects for group means
+
+&lt;table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Level &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; E1 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; E2 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Treatment A &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Treatment B &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Treatment C &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -1 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+`$$\mu_1 = \beta_0 + 1*\beta_1 + 0*\beta_2 = \beta_0 + \beta_1$$`
+
+`$$\mu_2 = \beta_0 + 0*\beta_1 + 1*\beta_2 = \beta_0 + \beta_2$$`
+
+`$$\mu_3 = \beta_0 -1*\beta_1 -1*\beta_2 = \beta_0 - \beta_1 -\beta_2$$`
+
+---
+# The wide world of contrasts 
++ We have now seen two examples of coding schemes (dummy and effect).
+
++ We have also seen that so long as we apply some set of constraints, we are able to do different things.
+
++ This means there are **lots** of different coding's we can use for categorical variables to make different comparisons.
+  + If you are interested, see the excellent resource on [UCLA website](https://stats.idre.ucla.edu/r/library/r-library-contrast-coding-systems-for-categorical-variables/)
+
++ These can include some custom contrasts (planned comparisons).
+
+---
+# Summary of today
+
++ We have considered different ways in which we can code categorical predictors, such that the group comparisons are equivalent to ANOVA.
+
++ Take home:
+  + Use of coding matrices allows us to compare groups (or levels) in lots of ways
+  + We will come to see this is very useful for testing specific hypotheses.
+  + Effects (sum to zero, or deviation) coding = traditional ANOVA
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

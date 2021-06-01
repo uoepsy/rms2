@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Quick Quiz</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# <b>Quick Quiz</b>
+## <br><br>
+### Department of Psychology<br>The University of Edinburgh
+### AY 2020-2021
+
+---
+
+
+
+
+
+
+
+
+# Instructions
++ There will now be a small set of questions. 
+
+--
+
++ Pause the video to think about them and write your answers down. 
+
+--
+
++ The answers will be shown immediately afterwards.
+
+--
+
++ This is to check learning and is not assessed.
+
+---
+# Question 1
+
+
+
++ Which model fits best?
+
+
+```r
+m0 &lt;- lm(health ~ age + sex + O + C + E + A + N, data = midus2)
+m1 &lt;- lm(health ~ age + sex + O + C + E + A + N + PIL, data = midus2)
+```
+
+.pull-left[
+
+```r
+AIC(m0, m1)
+```
+
+```
+##    df      AIC
+## m0  9 6484.457
+## m1 10 6444.113
+```
+
+```r
+BIC(m0, m1)
+```
+
+```
+##    df      BIC
+## m0  9 6533.719
+## m1 10 6498.849
+```
+]
+
+.pull-right[
+
+```r
+anova(m0, m1)
+```
+
+```
+## Analysis of Variance Table
+## 
+## Model 1: health ~ age + sex + O + C + E + A + N
+## Model 2: health ~ age + sex + O + C + E + A + N + PIL
+##   Res.Df    RSS Df Sum of Sq      F    Pr(&gt;F)    
+## 1   1753 4055.4                                  
+## 2   1752 3959.0  1     96.35 42.638 8.604e-11 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+]
+
+
+---
+# Question 1: Answer
++ The models are nested.
++ Incremental F is significant
++ AIC for `m1` is smaller
++ BIC for `m1` is smaller and &gt; 10
++ Model `m1` looks like the better model.
+
+---
+# Question 2
+
++ Which model fits best?
+
+
+```r
+m0 &lt;- lm(health ~ age + E, data = midus2)
+m1 &lt;- lm(health ~ age + E + sex, data = midus2)
+```
+
+.pull-left[
+
+```r
+AIC(m0, m1)
+```
+
+```
+##    df      AIC
+## m0  4 6638.786
+## m1  5 6638.716
+```
+
+```r
+BIC(m0, m1)
+```
+
+```
+##    df      BIC
+## m0  4 6660.680
+## m1  5 6666.084
+```
+]
+
+.pull-right[
+
+```r
+anova(m0, m1)
+```
+
+```
+## Analysis of Variance Table
+## 
+## Model 1: health ~ age + E
+## Model 2: health ~ age + E + sex
+##   Res.Df    RSS Df Sum of Sq      F Pr(&gt;F)
+## 1   1758 4452.0                           
+## 2   1757 4446.8  1    5.2294 2.0662 0.1508
+```
+]
+
+---
+# Question 2: Answer
++ The models are nested.
++ Incremental F is not significant
++ AIC for `m1` is smaller
++ BIC for `m0` is smaller.
++ We have contrasting information, but overall it looks like `m0` is the better model.
+
+---
+# Question 3
+
++ Which model fits best?
+
+
+```r
+m0 &lt;- lm(health ~ age + O + C, data = midus2)
+m1 &lt;- lm(health ~ age + E + A + N, data = midus2)
+```
+
+.pull-left[
+
+```r
+AIC(m0, m1)
+```
+
+```
+##    df      AIC
+## m0  5 6622.335
+## m1  6 6531.982
+```
+
+```r
+BIC(m0, m1)
+```
+
+```
+##    df      BIC
+## m0  5 6649.703
+## m1  6 6564.824
+```
+]
+
+.pull-right[
+
+```r
+anova(m0, m1)
+```
+
+```
+## Analysis of Variance Table
+## 
+## Model 1: health ~ age + O + C
+## Model 2: health ~ age + E + A + N
+##   Res.Df    RSS Df Sum of Sq      F    Pr(&gt;F)    
+## 1   1757 4405.6                                  
+## 2   1756 4180.5  1    225.09 94.548 &lt; 2.2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+]
+
+---
+# Question 3: Answer
++ The models are non-nested.
++ Therefore you should have ignored the incremental F
++ AIC for `m1` is smaller
++ BIC for `m1` is smaller and &gt; 10
++ Model `m1` looks like the better model.
+  
+---
+# The end.
+
++ If you are happy with your answers, move on to the next video/task.
+
++ If you are unclear on anything, either pop along to office hours, or post a question on the discussion board.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "16:9",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

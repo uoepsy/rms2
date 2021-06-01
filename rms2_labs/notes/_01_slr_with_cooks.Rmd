@@ -1,0 +1,612 @@
+---
+title: "Simple linear regression"
+bibliography: references.bib
+biblio-style: apalike
+link-citations: yes
+params: 
+    SHOW_SOLS: FALSE
+    TOGGLE: TRUE
+---
+
+
+```{r setup, include=FALSE}
+source('assets/setup.R')
+
+# knitr::opts_chunk$set(cache = TRUE)
+set.seed(1)
+```
+
+
+
+:::yellow
+**NOTE**
+
+This lab will be a refresher for the students who took RMS1 last year.
+:::
+
+
+# Research question
+
+A group of researchers is interested in the relationship between the reaction time taken by people to identify whether two 3D images display the same object or not, and the rotation angle at which one of the two objects is presented.
+
+Consider the following data containing the reaction times (in milliseconds) it took a sample of 100 people to identify whether two 3D objects were the same or not, for different rotation angles between 0 and 200 degrees.
+For the moment, we are not interested whether the participant correctly answered or not, but just in their reaction time.
+
+`r optbegin('Data: mental_rotation.csv', FALSE, TRUE, toggle = params$TOGGLE)`
+**Download link**
+
+[Download the data here](https://uoepsy.github.io/data/mental_rotation.csv)
+
+**Description**
+
+Each person in the sample was asked to look at two 3D images presented next to each other. The second image was simply a rotated version of the first, and the participants were asked to identify if the two images showed the same object or not. The reaction time (in milliseconds) was recorded for each participant.
+
+The measured variables were:
+
+- `angle_degrees`: The rotation angle, between 0 and 200 degrees, of the second image.
+- `rt_ms`: Reaction time (in milliseconds).
+
+
+```{r, echo=FALSE, fig.cap='Example of target object (left) and rotated version of it (right). <br>Source: https://plato.stanford.edu/entries/mental-imagery/mental-rotation.html'}
+knitr::include_graphics('images/mental_rotation.gif')
+```
+
+
+**Preview**
+
+The first six rows of the data are:
+
+```{r echo=FALSE}
+library(tidyverse)
+library(kableExtra)
+
+df <- read_csv(file = 'https://uoepsy.github.io/data/mental_rotation.csv')
+kable(head(df), align = 'c', digits = 2) %>%
+  kable_styling(full_width = FALSE) %>%
+  column_spec(1:2, width = '10em')
+```
+`r optend()`
+
+
+
+
+
+# Exploratory analysis
+
+
+
+`r qbegin(1)`
+Read the data frame into R and name it `mr`.
+
+_**Tip:**
+The data file is called 'mental_rotation.csv'. Hence, the data are in comma separated value (csv) format and the appropriate `tidyverse` function is `read_csv()`._
+
+**Steps:**
+
+1. Load the tidyverse library
+2. Read the data into R using `read_csv()`
+3. Check that everything went correctly by inspecting the top 6 rows of the data with the function `head()`.
+`r qend()`
+`r solbegin(show = params$SHOW_SOLS, toggle = params$TOGGLE)`
+Load the tidyverse library:
+```{r}
+library(tidyverse)
+```
+
+Read the data into R:
+```{r}
+mr <- read_csv(file = 'https://uoepsy.github.io/data/mental_rotation.csv')
+```
+
+Check for reading errors by inspecting the first six rows of the data:
+```{r}
+head(mr)
+```
+`r solend()`
+
+
+
+`r qbegin(2)`
+Rename the variables to not include the measurement units.
+
+_**Hint:** To rename variables, you can use the `rename()` function from the `tidyverse` package._
+
+_**Note:** The measurement units should always be included when reporting results or showing a plot. But, for coding simplicity, it is common practice to simplify the variable names._
+`r qend()`
+`r solbegin(show = params$SHOW_SOLS, toggle = params$TOGGLE)`
+Rename variables:
+```{r}
+mr <- mr %>%
+  rename(
+    angle = angle_degrees,
+    rt = rt_ms
+  )
+```
+
+Check by inspecting the first six rows:
+```{r}
+head(mr)
+```
+`r solend()`
+
+
+By looking at the data, we can describe the study design and data collection strategy. We can also classify the variables as either numeric or categorical.
+
+:::int
+A random sample of 100 participants was invited to take part into a mental rotation task. Each participant was shown two images and was asked to identify whether or not the objects displayed in the two images were the same.
+The second image was displayed with a rotation of a certain angle.
+For each participant, two numeric variables were recorded: reaction time (in milliseconds) and rotation angle (in degrees).
+:::
+
+
+`r qbegin(3)`
+Investigate the marginal distribution of each variable and the relationship between the two variables.
+
+**Steps:**
+
+1. Create a density plot of the rotation angles. Add a boxplot to investigate for outliers.
+1. Create a density plot of the reaction times. Add a boxplot to investigate for outliers.
+1. Compute the mean, median, standard deviation, and IQR for each variable. Comment on the centre and spread of each distribution.
+1. Create a scatterplot of reaction times vs rotation angles.
+1. Compute the correlation coefficient between rotation angles and reaction times. Comment on the form, direction, and strength of the linear relationship by reporting the correlation coefficient.
+
+_**Tip:**
+The `patchwork` library is used to combine ggplots into a single figure made up of multiple panels. 
+To do so, assign the ggplots to different variables, e.g. `plt1 <- ggplot() + ...` and `plt2 <- ggplot() + ...`, and then use `plt1 + plt2` or `plt1 | plt2` to display the plots next to each other, or `plt1 / plt2` to display them under each other._
+`r qend()`
+`r solbegin(show = params$SHOW_SOLS, toggle = params$TOGGLE)`
+The following code chunk displays the marginal distribution of rotation angles (panel a), the marginal distribution of reaction times (panel b), and a scatterplot showing the relationship between angle and reaction times (panel c):
+```{r marg-distrib, fig.height=4, fig.width=10, out.width='100%', fig.cap = 'Marginal and joint distributions.'}
+library(patchwork)
+
+plt_angle <- ggplot(mr, aes(x = angle)) +
+  geom_density() +
+  geom_boxplot(width = 0.001) +
+  labs(x = 'Angle (degrees)', title = '(a)')
+
+plt_rt <- ggplot(mr, aes(x = rt)) +
+  geom_density() +
+  geom_boxplot(width = 0.0001) +
+  labs(x = 'RT (ms)', title = '(b)')
+
+plt_joint <- ggplot(mr, aes(x = angle, y = rt)) +
+  geom_point() +
+  labs(x = 'Angle (degrees)', y = 'RT (ms)', title = '(c)')
+
+plt_angle | plt_rt | plt_joint
+```
+
+
+Summary statistics:
+```{r}
+mr %>%
+  summarise(M_angle = mean(angle), 
+            SD_angle = sd(angle),
+            MED_angle = median(angle), 
+            IQR_angle = IQR(angle),
+            M_rt = mean(rt), 
+            SD_rt = sd(rt),
+            MED_rt = median(rt), 
+            IQR_rt = IQR(rt))
+```
+
+
+Correlation between the variables:
+```{r}
+cor(mr)
+```
+That is,
+$$
+r_{Angle, RT} = 0.854
+$$
+`r solend()`
+
+
+We might write-up our findings as follows:
+
+:::int
+The distribution of rotation angles appears to be roughly symmetric around the mean angle of 103 degrees, with standard deviation 54.3 degrees.
+The boxplot in Figure \@ref(fig:marg-distrib)(a) does not highlight any evident outliers.
+
+The distribution of reaction times appears to be right skewed, with a median reaction time of 1157 ms, and interquartile range of 695 ms.
+A boxplot of the distribution, Figure \@ref(fig:marg-distrib)(b), flags two potential outliers which are worth keeping an eye on, but have not been removed from the dataset.
+
+Finally, the scatterplot in Figure \@ref(fig:marg-distrib)(c) displays the relationship between rotation angle and reaction time. There appears to be a strong ($r_{Angle, RT} = 0.81$), positive linear relationship between the two variables.
+The scatterplot also highlights a couple of points which do not fit with the rest of the data. One has a high rotation angle but an unusually low reaction time, and another point having an angle of approximately 50 degrees and a reaction time of 1500 ms approximately, which is roughly 700 ms above the rest of the points.
+:::
+
+
+
+# Modelling
+
+After the exploratory analysis, we can write up the modelling strategy we are attempting:
+
+:::int
+We want to investigate whether reaction time is affected by the object's rotation angle and what is the intensity of that relationship.
+
+To do so, we will use a simple linear regression model involving two numeric variables: angle (the predictor) and reaction time (the response).
+In the dataset, angle is measured in degrees and reaction time in milliseconds.
+:::
+
+<br>
+
+`r optbegin('Technology tip: How to fit a linear model in R', FALSE, show = TRUE, toggle = params$TOGGLE)`
+Imagine you have a data frame `df` as follows:
+```{r echo=FALSE}
+df <- tibble(x = runif(10), 
+             y = 3 + 2 * x + rnorm(10, 0, 0.1))
+```
+```{r}
+df
+```
+
+You wish to predict $y$ given the $x$ value of a case. That is, you want to fit the linear model
+$$
+\hat y = \hat \beta_0 + \hat \beta_1 x
+$$
+which can be equivalently written as:
+$$
+\hat y = \hat \beta_0 \cdot 1 + \hat \beta_1 \cdot x
+$$
+
+The betas --- that is, $\hat \beta_0$ and $\hat \beta_1$ --- are called estimated regression coefficients.
+
+In R, we fit a linear model using the `lm` function:
+```
+lm(<formula>, data = <data frame>)
+```
+
+The first argument, `<formula>`, specifies which variable (dependent/response variable) is to be predicted using which other variables (predictor/independent variables).
+The formula contains the response variable, followed by a tilde `~` sign, and then the variables appearing to the right of the betas.
+
+The second argument, `data = <data frame>`, tells R where to look for the variables.
+
+In our case, this would be:
+```
+mdl <- lm(y ~ 1 + x, data = df)
+```
+where:
+
+- formula = `y ~ 1 + x` as $\hat y = \hat \beta_0 \cdot 1 + \hat \beta_1 \cdot x$ has $1$ and $x$ multiplied to each beta
+- data = `df` as the variables `y` and `x` are inside `df`
+`r optend()`
+
+
+`r qbegin(4)`
+Using the `lm()` function, fit the following linear model to the mental rotation data and call the fitted model `mdl1`:
+$$
+\widehat{RT} = \hat \beta_0 + \hat \beta_1 \ Angle
+$$
+
+Look at the results using the `summary(mdl1)` function.
+`r optbegin('Give me more guidance about summary()', FALSE, show = TRUE, toggle = params$TOGGLE)`
+The following image displays the elements of a `summary()` output. For now, you can ignore the parts that have been greyed out.
+```{r, echo=FALSE, out.width = '100%'}
+knitr::include_graphics('images/slr_summary.png')
+```
+
+The "Call" part,
+```
+Call:
+lm(formula = y ~ 1 + x, data = df)
+```
+reminds you that you have fitted the model $\hat y = \hat \beta_0 + \hat \beta_1 x$.
+
+The column "Estimate" contains the estimated regression coefficients, i.e. the estimated intercept $\hat \beta_0$ and slope $\hat \beta_1$.
+The slope is the coefficient that appears next to the name of the predictor, "x" in this case.
+
+The column "Std. Error" returns an estimate of the standard deviation of the betas. 
+
+The column "t value" contains the t-statistic for testing if the beta coefficient is significantly different from zero. Next to it is reported the p-value of the test.
+
+The `Multiple R-squared:  0.9723` tells you that 97\% of the total variability in $y$ is explained by the linear association with $x$.
+
+Finally, the `F-statistic: 280.4 on 1 and 8 DF,  p-value: 1.638e-07` reports the results of the model utility F-test.
+`r optend()`
+`r qend()`
+`r solbegin(show = params$SHOW_SOLS, toggle = params$TOGGLE)`
+Fit the linear model:
+```{r}
+mdl1 <- lm(rt ~ 1 + angle, data = mr)
+```
+
+Look at the results:
+```{r}
+summary(mdl1)
+```
+`r solend()`
+
+
+<br>
+By providing a fitted model to the `plot()` function, you obtain diagnostic plots. However, rather than visualising the plots one at a time, you can display all four plots at once by first telling R:
+```{r eval=FALSE}
+par(mfrow = c(2,2))
+```
+
+This means that each figure should be made of 2 by 2 plots, filled row-wise. The first plot will appear in panel (1,1), the second plot in panel (1,2), the third in panel (2,1) and the last in panel (2,2).
+
+To go back to one figure made of a single plot, you type:
+```{r eval=FALSE}
+par(mfrow = c(1,1))
+```
+
+**IMPORTANT:**
+
+`par(mfrow = ...)` will not work with ggplot.
+
+<br>
+
+`r qbegin(5)`
+Investigate whether or not the fitted model `mdl1` violates the regression assumptions.
+
+**Steps:**
+
+1. Tell R to display 4 panels in a single figure
+2. Call the `plot()` function on the fitted model to display the diagnostic plots.
+3. Check for outliers or influential points.
+`r qend()`
+`r solbegin(show = params$SHOW_SOLS, toggle = params$TOGGLE)`
+Diagnostic plots:
+```{r out.width='90%', fig.height=7, fig.width=7}
+par(mfrow = c(2,2))
+plot(mdl1)
+```
+
+From the last plot, it appears that case 41 is influential. Let's investigate this by looking at the Cook's distance. This is shown in the `cook.d` column of the following output:
+```{r}
+im <- influence.measures(mdl1)
+summary(im)
+```
+
+The point is flagged as an influential point, as we see an asterisk under the `cook.d` column for case 41.
+
+We might write:
+
+:::int
+The linear model $\widehat{RT} = \hat \beta_0 + \hat \beta_1 Angle$ highlighted one influential observation (namely, case 41) having a Cook's distance of 0.74.
+Careful inspection of case 41 showed a large rotation angle (200 degrees), far from the average angle (103 degrees) --- hence, the point has high leverage. Furthermore, the point was an outlier as the actual reaction time was 508 ms, which was roughly 1503 ms lower than the model-predicted value.
+:::
+`r solend()`
+
+
+
+`r qbegin(6)`
+Remove any influential points from the dataset.
+
+Re-fit the linear model and check for violations of the regression assumptions.
+`r qend()`
+`r solbegin(show = params$SHOW_SOLS, toggle = params$TOGGLE)`
+```{r}
+mr <- mr[-41, ]
+```
+
+Re-fit the model using the new dataset and check the assumptions:
+```{r}
+mdl2 <- lm(rt ~ 1 + angle, data = mr)
+summary(mdl2)
+```
+
+```{r out.width='90%', fig.height=7, fig.width=7}
+par(mfrow = c(2,2))
+plot(mdl2)
+```
+
+```{r}
+library(car)
+
+ncvTest(mdl2)
+
+shapiro.test(mdl2$residuals)
+```
+
+
+We could write:
+
+:::int
+After removing the influential case from the dataframe and re-fitting the linear model, the diagnostic plots raised concerns about the normality and equal variance assumptions not being satisfied.
+
+The Normal quantile plot showed that the distribution of the residuals was skewed to the right, and the Scale-Location plot displayed a thickening pattern (that is, a fan-shape) rather than a roughly constant vertical spread. Similarly, the Residuals vs Fitted values plot also showed a thickening pattern with a fan-like shape, suggesting a violation of the constant variance assumption.
+
+At the 5\% significance level, we performed a Breusch-Pagan test against the null hypothesis of constant variance, $\chi^2(1) = 11.2, p<.001$. The small p-value indicates that the sample results provide strong evidence against the null hypothesis of constant variance.
+
+Furthermore, a Shapiro-Wilk test was significant at the 5\% level ($W = .919, p < .001$), indicating that the sample results provide strong evidence against the null hypothesis that the residuals came from a normal population.
+:::
+`r solend()`
+
+
+`r qbegin(7)`
+Do you notice any violations of the regression assumptions?
+
+If yes, try fixing the problem by transforming the response variable.
+
+Re-fit the linear model and check for violations of the regression assumptions.
+`r qend()`
+`r solbegin(show = params$SHOW_SOLS, toggle = params$TOGGLE)`
+The diagnostic plots highlight a violation of the constant error variance assumption.
+Furthermore, the qq-plot highlights a violation of the normality assumption, which is also pointed out by a Shapiro-Wilk test. 
+
+However, let's not panic and deal with a violation at a time... First, we will try to fix the violation of the equal variance assumption.
+Typically, I would recommend checking for violations of the equal variance assumption before normality.
+
+Try log-transforming the response:
+```{r}
+mr <- mr %>%
+  mutate(log_rt = log(rt))
+```
+
+Fit a linear model using the transformed response:
+```{r}
+mdl3 <- lm(log_rt ~ 1 + angle, data = mr)
+summary(mdl3)
+```
+
+```{r out.width='90%', fig.height=7, fig.width=7}
+par(mfrow = c(2,2))
+plot(mdl3)
+
+ncvTest(mdl3)
+
+shapiro.test(mdl3$residuals)
+```
+
+We could report these results as:
+
+:::int
+To mitigate the violation of the equal variance assumption, we log transformed the response variable.
+
+After refitting the model, the diagnostic plots only raised concern about a single point (case 62) not fitting the linear pattern in the Normal quantile plot, and also being particularly unusual in the Residuals vs Fitted values plot.
+
+At the 5\% significance level, a Shapiro-Wilk test for normality of the errors showed a significant p-value, indicating violation of the normality assumption.
+
+After careful inspection, we decided to remove case 62 from the dataset and re-fit the linear model.
+:::
+
+`r solend()`
+
+
+
+
+`r qbegin(8)`
+Do you notice any violations of the regression assumptions?
+
+If yes, try fixing the problem by removing any outliers from the dataset.
+
+Re-fit the linear model and check for violations of the regression assumptions.
+`r qend()`
+`r solbegin(show = params$SHOW_SOLS, toggle = params$TOGGLE)`
+The diagnostic plots highlighted a potential outlier (case 62) which does not fit with the rest of the data in the qq-plot.
+
+Try removing the outlier from the dataset:
+```{r}
+mr <- mr[-62, ]
+```
+
+Re-fit the model and check assumptions:
+```{r out.width='90%', fig.height=7, fig.width=7}
+mdl4 <- lm(log_rt ~ 1 + angle, data = mr)
+summary(mdl4)
+
+par(mfrow = c(2,2))
+plot(mdl4)
+
+ncvTest(mdl4)
+
+shapiro.test(mdl4$residuals)
+```
+
+
+:::int
+The final model was found to not violate the regression assumptions. A plot of the residuals vs fitted values shows randomly scattered points with no pattern and a horizontal direction.
+
+The Normal quantile plot (qq-plot) shows a roughly linear trend in the standardized residuals vs the normal quantiles.
+We performed a Shapiro-Wilk test, at the 5\% significance level, against the null hypothesis that the residuals came from a normal distribution ($W = 0.98$, $p = 0.138$).
+The large $W$-statistic leads to a p-value (0.138) larger than the 0.05 threshold.
+Hence, the sample results do not provide sufficient evidence to reject the null hypothesis that the errors follow a normal distribution.
+
+The Residuals vs Fitted plot and the Scale-Location plot show that the vertical spread of the residuals is roughly the same everywhere. 
+Hence, we see no violation of the constant variance assumption.
+At the 5\% significance level, we also performed a Breusch-Pagan test against the null hypothesis of homoscedasticity ($\chi^2(1) = 0.226, p = 0.634$). The large p-value indicates that the sample results do not provide sufficient evidence to reject the null hypothesis of equal variance.
+
+Finally, a plot of residuals vs leverage does not highlight any influential observations.
+:::
+`r solend()`
+
+
+
+
+<br>
+Remember to back to figures with only one plot:
+```{r}
+par(mfrow = c(1,1))
+```
+<br>
+
+
+# Reporting
+
+`r qbegin(9)`
+Describe the final model and create a nicely formatted table for reporting the regression results.
+
+__Steps:__
+
+1. Install the `sjPlot` package: `install.packages('sjPlot')`
+2. Load the package
+3. Provide the fitted model to the function `tab_model()`
+`r qend()`
+`r solbegin(show = params$SHOW_SOLS, toggle = params$TOGGLE)`
+We might describe the model as follows:
+
+:::int
+The final model which was chosen to answer the research question of interest was:
+$$
+\widehat{\log (RT)} = 6.31 + 0.00717 \ Angle
+$$
+
+and was fitted excluding case 41, and then case 62.^[Footnote: in the original dataset, these would be cases 41 and 63.] 
+The former was found to be an influential point, while the latter an outlier affecting normality.
+:::
+
+Table of the results:
+```{r}
+library(sjPlot)
+tab_model(mdl4)
+```
+`r solend()`
+
+
+
+
+
+`r qbegin(10)`
+Plot the data and the final model which satisfies the regression assumptions.
+
+__Steps:__
+
+1. Extract the regression coefficients $\hat \beta_0, \hat \beta_1$ from the fitted model using the `betas <- coef(<fitted model>)` function.
+2. The intercept is the first entry, `betas[1]`
+3. The slope is the second entry, `betas[2]`
+4. To plot a line with a given intercept and slope, use the function `geom_abline()`. Check its help page for the arguments to specify.
+`r qend()`
+`r solbegin(show = params$SHOW_SOLS, toggle = params$TOGGLE)`
+Plot the final model:
+```{r}
+betas <- coef(mdl4)
+
+ggplot(mr, aes(x = angle, y = log_rt)) +
+  geom_point() +
+  geom_abline(intercept = betas[1], slope = betas[2], color = 'blue') +
+  labs(x = 'Angle (degrees)', y = 'Log RT (ms)')
+```
+`r solend()`
+
+
+
+`r qbegin(11)`
+Provide a write-up of the final model, interpreting the estimated coefficients in the context of the research question.
+`r qend()`
+`r solbegin(show = params$SHOW_SOLS, toggle = params$TOGGLE)`
+:::int
+The fitted model predicts log reaction time for a given rotation angle.
+Both intercept ($t(96) = 6.31, p < .001$, two-sided) and slope ($t(96) = 0.00717, p < .001$, two-sided) are significantly different from zero.
+
+The estimated intercept $\hat \beta_0 = 6.31$ represents the predicted log reaction time (in milliseconds) when the object is not rotated (zero degrees angle).
+
+The estimated slope, $\hat \beta_1 = 0.00717$, indicates that, each one-degree increase in the object rotation angle is associated, on average, to a 0.00717 ms increase in log reaction time.
+
+That is, there is a positive/increasing linear relationship between rotation angle and log reaction time.
+However, the magnitude of the rate of increase, even if significant, is small and in the order of 0.01.
+
+The F-test for model utility is also significant ($F(1,96) = 747.8, p < .001$). At the 5\% significance level, rotation angle is a significant predictor of log reaction time.^[
+In simple linear regression, this information is equivalent to the t-test for the significance of the slope as the F-statistic is the square t-statistic.
+]
+
+Approximately 88.6\% of the variability in log reaction times is explained by the linear association with the objects' rotation angle.
+:::
+`r solend()`
+
+
+
+# Put everything together
+
+If you followed the steps above, it is just a matter of taking all interpretation boxes (green vertical bands) and combining them, in order to have a reasonable draft of a statistical report.
+Do not forget to include supporting figures such as the diagnostic plots for the final model, to show your reader that your final model does not violate the regression assumptions.

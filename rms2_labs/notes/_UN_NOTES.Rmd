@@ -1,0 +1,72 @@
+---
+title: "Untitled"
+author: "Umberto Noè"
+date: "30/10/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+
+Consider the two plots below, each corresponding to a different dataset.
+Both plots display the distribution of a response $y$ in each group by using boxplots, along with white dots to highlight the group means:
+```{r anova-why, fig.width=10, fig.height = 5, out.width = '100%', echo=FALSE}
+library(tidyverse)
+library(patchwork)
+set.seed(1)
+
+d1 <- tibble(group = factor(LETTERS[1:4]),
+              mu = c(13, 14, 12, 11),
+              sigma = rep(10, 4)) %>%
+  rowwise() %>%
+  mutate(y = list(rnorm(300, mu, sigma))) %>%
+  unnest(y)
+
+d2 <- tibble(group = factor(LETTERS[1:4]),
+             mu = c(13, 14, 12, 11),
+             sigma = rep(0.5, 4)) %>%
+  rowwise() %>%
+  mutate(y = list(rnorm(300, mu, sigma))) %>%
+  unnest(y)
+
+p1 <- ggplot(d1, aes(x = group, y = y, fill = group)) +
+  geom_boxplot() +
+  stat_summary(fun = mean, color = 'white') +
+  labs(title = '(a) Large variability within each group')
+
+p2 <- ggplot(d2, aes(x = group, y = y, fill = group)) +
+  geom_boxplot() +
+  stat_summary(fun = mean, color = 'white') +
+  labs(title = '(b) Smaller variability within each group')
+
+p1 | p2
+```
+
+We wish to decide whether the means are different enough for us to reject the null hypothesis of equal population means.
+On the contrary, if they are sufficiently close, we will just attribute the observed differences to the natural variability from sample to sample.
+
+_What do you think?_
+
+- Do the data in plot (a) provide sufficient evidence that the population means are not all equal?
+- Do the data in plot (b) provide sufficient evidence that the population means are not all equal?
+
+It is fairly easy to see that the means in the second dataset differ. It's hard to imagine that those means could be that far apart just from natural sampling variability alone. 
+
+How about the first dataset? It looks like these observations _could_ have occurred from four populations having the same mean.
+The variation among the group means (white dots) in the first plot does seem consistent with the null hypothesis of equal population means.
+
+Believe it or not, both plots have the same means! They group means in both plots are 13, 14, 12, and 11, respectively.
+
+So what is making the figures look so different???
+
+In the second figure, the variation within each group is so small that the differences between the means stand out. 
+In the first figure, instead, the variation within each group is much larger compared to the variation of the group means. This, in turn, increases the range of the y-axis, making it difficult to spot any differences between the means.
+
+This is the central idea of the F-test used in ANOVA. If the variation of the group means is much larger than the variation of the data within each group, we reject the null hypothesis and conclude that at least two of the population means are different.
+On the contrary, if the variation of the data within each group is much larger than the variation between the group means, we do not have sufficient evidence to reject the null hypothesis of equal population means.
+
+How do we compute the variation among the group means? Do you remember the formula of the variance? We will use the quantity at the numerator of the variance, called sum of squares. That's why the method is called analysis of variance

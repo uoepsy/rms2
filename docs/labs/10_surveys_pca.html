@@ -1,0 +1,2041 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Surveys &amp; PCA</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<script>
+function toggle_visibility(id1, id2) {
+var e = document.getElementById(id1);
+var f = document.getElementById(id2);
+e.style.display = ((e.style.display!='none') ? 'none' : 'block');
+if(f.classList.contains('fa-plus')) {
+    f.classList.add('fa-minus')
+    f.classList.remove('fa-plus')
+} else {
+    f.classList.add('fa-plus')
+    f.classList.remove('fa-minus')
+}
+}
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="assets/style-labs.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html"><strong>RMS2</strong></a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="intro_tidyverse.html">RMS2 starts here</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Regression models
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="01_slr.html">1/1: Simple linear regression</a>
+    </li>
+    <li>
+      <a href="02_mlr.html">1/2: Multiple regression basics</a>
+    </li>
+    <li>
+      <a href="03_mlr_int.html">1/3: Interactions</a>
+    </li>
+    <li>
+      <a href="04_mlr_assumpt.html">1/4: Assumptions and diagnostics</a>
+    </li>
+    <li>
+      <a href="05_mlr_eval.html">1/5: Model fit, model comparison, and model selection</a>
+    </li>
+    <li class="dropdown-header">1/6: Break week</li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Models for experimental data
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="07_anova.html">1/7: ANOVA and contrasts</a>
+    </li>
+    <li>
+      <a href="08_factorial_anova.html">1/8: Factorial ANOVA</a>
+    </li>
+    <li>
+      <a href="09_repeated_measures.html">1/9: Repeated measures</a>
+    </li>
+    <li>
+      <a href="10_surveys_pca.html">1/10: Surveys and  PCA</a>
+    </li>
+    <li>
+      <a href="11_fa.html">1/11: Exploratory factor analysis</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Extra
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="intro_r_rstudio.html">Getting started with R &amp; RStudio</a>
+    </li>
+    <li>
+      <a href="extra_writeup.html">Example Write-up</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Surveys &amp; PCA</h1>
+
+</div>
+
+
+<div id="data-wrangling-for-data-reduction" class="section level1">
+<h1>Data wrangling for data reduction</h1>
+<p>The <a href="https://uoepsy.github.io/data/rms2_recodedata.csv">rms2_recodedata.csv</a> dataset contains responses from 180 people on 10 personality items measuring <em>Need for Cognition</em>. A list of these items can be seen below. Each one was measured on a score from 1 to 6.</p>
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#khtjwhphhe .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#khtjwhphhe .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#khtjwhphhe .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#khtjwhphhe .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#khtjwhphhe .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#khtjwhphhe .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#khtjwhphhe .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#khtjwhphhe .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#khtjwhphhe .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#khtjwhphhe .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#khtjwhphhe .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#khtjwhphhe .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#khtjwhphhe .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#khtjwhphhe .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#khtjwhphhe .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#khtjwhphhe .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#khtjwhphhe .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#khtjwhphhe .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#khtjwhphhe .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#khtjwhphhe .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#khtjwhphhe .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#khtjwhphhe .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#khtjwhphhe .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#khtjwhphhe .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#khtjwhphhe .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#khtjwhphhe .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#khtjwhphhe .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#khtjwhphhe .gt_left {
+  text-align: left;
+}
+
+#khtjwhphhe .gt_center {
+  text-align: center;
+}
+
+#khtjwhphhe .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#khtjwhphhe .gt_font_normal {
+  font-weight: normal;
+}
+
+#khtjwhphhe .gt_font_bold {
+  font-weight: bold;
+}
+
+#khtjwhphhe .gt_font_italic {
+  font-style: italic;
+}
+
+#khtjwhphhe .gt_super {
+  font-size: 65%;
+}
+
+#khtjwhphhe .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="khtjwhphhe" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  <thead class="gt_header">
+    <tr>
+      <th colspan="2" class="gt_heading gt_title gt_font_normal" style>Data Dictionary</th>
+    </tr>
+    <tr>
+      <th colspan="2" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border" style></th>
+    </tr>
+  </thead>
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">variable</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">question</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_left">d185</td>
+      <td class="gt_row gt_left">I really enjoy a task that involves coming up with new solutions to problems</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">d186</td>
+      <td class="gt_row gt_left">I only think as hard as I have to</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">d187</td>
+      <td class="gt_row gt_left">I like tasks that require little thought once I've learned them</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">d188</td>
+      <td class="gt_row gt_left">I tend to set goals that can be accomplished only by expending considerable mental effort</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">d189</td>
+      <td class="gt_row gt_left">I find little satisfaction in deliberating hard and for long hours</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">d190</td>
+      <td class="gt_row gt_left">I think best when those around me are very intelligent</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">d191</td>
+      <td class="gt_row gt_left">I don't like to have the responsibility of handling a situation that requires a lot of thought</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">d192</td>
+      <td class="gt_row gt_left">I prefer my life to be filled with puzzles that I must solve</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">d193</td>
+      <td class="gt_row gt_left">Thinking is not my idea of fun</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">d194</td>
+      <td class="gt_row gt_left">I prefer complex to simple problems</td>
+    </tr>
+  </tbody>
+  
+  
+</table></div>
+<div id="min-leq-y-leq-max" class="section level2">
+<h2><span class="math inline">\(\min \leq y \leq \max\)</span></h2>
+<div class="question-begin">
+Question 1
+</div>
+<div class="question-body">
+<p>Read the data into R. Provide numerical summaries of the variables in the data frame. If you wish, you could try the <code>describe()</code> function from the <strong>psych</strong> package.</p>
+<p>Given the description of the data above, is anything looking odd?</p>
+<p class="question-end">
+</p>
+</div>
+<div class="solution-begin">
+Solution <span id="sol-start-110" class="fa fa-plus solution-icon clickable" onclick="toggle_visibility(&#39;sol-body-110&#39;, &#39;sol-start-110&#39;)"></span>
+</div>
+<div id="sol-body-110" class="solution-body" style="display: none;">
+<pre class="r"><code>library(tidyverse)
+surveydf &lt;- read_csv(&quot;https://uoepsy.github.io/data/rms2_recodedata.csv&quot;)</code></pre>
+<p><em>Option 1:</em> the <code>summary()</code> function</p>
+<pre class="r"><code>summary(surveydf)</code></pre>
+<pre><code>##       d185            d186            d187            d188      
+##  Min.   :2.000   Min.   :0.000   Min.   :0.000   Min.   :0.000  
+##  1st Qu.:4.000   1st Qu.:3.000   1st Qu.:2.000   1st Qu.:3.000  
+##  Median :4.000   Median :3.000   Median :3.000   Median :4.000  
+##  Mean   :4.144   Mean   :3.411   Mean   :3.311   Mean   :3.939  
+##  3rd Qu.:5.000   3rd Qu.:4.250   3rd Qu.:4.000   3rd Qu.:5.000  
+##  Max.   :6.000   Max.   :6.000   Max.   :7.000   Max.   :7.000  
+##       d189            d190            d191            d192      
+##  Min.   :1.000   Min.   :2.000   Min.   :1.000   Min.   :2.000  
+##  1st Qu.:2.000   1st Qu.:3.000   1st Qu.:3.000   1st Qu.:3.000  
+##  Median :3.000   Median :4.000   Median :4.000   Median :4.000  
+##  Mean   :3.033   Mean   :3.533   Mean   :3.839   Mean   :4.167  
+##  3rd Qu.:4.000   3rd Qu.:4.000   3rd Qu.:5.000   3rd Qu.:5.000  
+##  Max.   :5.000   Max.   :7.000   Max.   :5.000   Max.   :7.000  
+##       d193            d194      
+##  Min.   :1.000   Min.   :2.000  
+##  1st Qu.:4.000   1st Qu.:3.000  
+##  Median :4.000   Median :4.000  
+##  Mean   :4.028   Mean   :3.833  
+##  3rd Qu.:5.000   3rd Qu.:4.000  
+##  Max.   :7.000   Max.   :6.000</code></pre>
+<p><em>Option 2:</em> the <code>describe()</code> function from the <code>psych</code> package:</p>
+<pre class="r"><code>library(psych)
+describe(surveydf)</code></pre>
+<pre><code>##      vars   n mean   sd median trimmed  mad min max range  skew kurtosis   se
+## d185    1 180 4.14 0.89      4    4.22 1.48   2   6     4 -0.52     0.05 0.07
+## d186    2 180 3.41 1.19      3    3.37 1.48   0   6     6  0.29    -0.78 0.09
+## d187    3 180 3.31 1.26      3    3.37 1.48   0   7     7 -0.30    -0.30 0.09
+## d188    4 180 3.94 1.05      4    3.96 1.48   0   7     7 -0.16     0.34 0.08
+## d189    5 180 3.03 1.19      3    3.04 1.48   1   5     4 -0.08    -1.04 0.09
+## d190    6 180 3.53 0.99      4    3.49 1.48   2   7     5  0.42     0.25 0.07
+## d191    7 180 3.84 0.99      4    3.94 1.48   1   5     4 -0.73    -0.06 0.07
+## d192    8 180 4.17 1.14      4    4.17 1.48   2   7     5 -0.12    -0.71 0.08
+## d193    9 180 4.03 0.94      4    4.13 1.48   1   7     6 -0.69     0.74 0.07
+## d194   10 180 3.83 1.02      4    3.84 1.48   2   6     4  0.12    -0.46 0.08</code></pre>
+<p>Some items have a minimum score smaller than 1, and other items have a maximum score greater than 6. Hence, these items have scores which do not belong to the 1-6 scale employed.</p>
+</div>
+<p class="solution-end">
+</p>
+<div class="question-begin">
+Question 2
+</div>
+<div class="question-body">
+<p>For each item, we want to take all the values &lt;1 and &gt;6 and set them to NA. The <code>ifelse()</code> function will help you doing so.</p>
+<p>Think about the syntax “if <em>this</em> is true, then make it <em>this</em>, else make it <em>this</em>”. For example, <code>ifelse(data$variable == 5, "five", "not five")</code></p>
+<p>You can do this for each variable individually, using e.g,</p>
+<pre class="r"><code>surveydf %&gt;%
+  mutate(
+    d185 = ifelse(d185 == 5, &quot;five&quot;, &quot;not five&quot;),
+    d186 = ifelse(d186 == 5, &quot;five&quot;, &quot;not five&quot;),
+    ...
+    ...
+  )</code></pre>
+<p>or we can do it using <code>mutate()</code> in combination with the <code>across()</code> function. The across function tells R to mutate the data across many variables (in this case all of them: <code>everything()</code>) and it also requires creating a function which represents the transformation that we want to apply to each variable. The function requires a generic variable name (in this case <code>x</code>), checks whether each entry in <code>x</code> is equal to 5 and, if it is, it replaces it by “five” while, if it isn’t, it replaces it by “not five”. The x will be replaced with each variable in the data set automatically so that with just one line you do the transformations on all d185, d186, and so on.</p>
+<pre class="r"><code>surveydf %&gt;%
+  mutate(across(everything(), function(x) ifelse(x == 5, &quot;five&quot;, &quot;not five&quot;)))</code></pre>
+<p>For each item, take all the values &lt;1 and &gt;6 and set them to NA.</p>
+<p class="question-end">
+</p>
+</div>
+<div class="solution-begin">
+Solution <span id="sol-start-111" class="fa fa-plus solution-icon clickable" onclick="toggle_visibility(&#39;sol-body-111&#39;, &#39;sol-start-111&#39;)"></span>
+</div>
+<div id="sol-body-111" class="solution-body" style="display: none;">
+<p>Either:</p>
+<pre class="r"><code>surveydf %&gt;%
+  mutate(
+    d185 = ifelse(d185 &lt; 1 | d185 &gt; 6, NA, d185),
+    d186 = ifelse(d186 &lt; 1 | d186 &gt; 6, NA, d186),
+    d187 = ifelse(d187 &lt; 1 | d187 &gt; 6, NA, d187),
+    d188 = ifelse(d188 &lt; 1 | d188 &gt; 6, NA, d188),
+    d189 = ifelse(d189 &lt; 1 | d189 &gt; 6, NA, d189),
+    d190 = ifelse(d190 &lt; 1 | d190 &gt; 6, NA, d190),
+    d191 = ifelse(d191 &lt; 1 | d191 &gt; 6, NA, d191),
+    d192 = ifelse(d192 &lt; 1 | d192 &gt; 6, NA, d192),
+    d193 = ifelse(d193 &lt; 1 | d193 &gt; 6, NA, d193),
+    d194 = ifelse(d194 &lt; 1 | d194 &gt; 6, NA, d194)
+)</code></pre>
+<pre><code>## # A tibble: 180 x 10
+##     d185  d186  d187  d188  d189  d190  d191  d192  d193  d194
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1     4     4     4     4     3     4     3     4     4     5
+##  2     5     3     4     3     4     3     4     5     4     3
+##  3     4     2     5     4     4     3     4     4     4     3
+##  4     2     4     3     4     4     4     4     4     4     3
+##  5     4     3     2     3     4     3     4     4     4     3
+##  6     5     2     5     5     3     2     5     3     5     2
+##  7     5     5     1     3     4     2     5     5     5     6
+##  8     5     3     3     4     4     3     3     4     4     4
+##  9     3     3     4     4     3     2     4     4     3     4
+## 10     4     2     5     4     4     3     5     3     4     2
+## # … with 170 more rows</code></pre>
+<p>or:</p>
+<pre class="r"><code>surveydf &lt;- 
+  surveydf %&gt;%
+  mutate(across(everything(), function(x) ifelse(x &lt; 1 | x &gt; 6, NA, x)))</code></pre>
+</div>
+<p class="solution-end">
+</p>
+</div>
+<div id="reverse-coding" class="section level2">
+<h2>Reverse coding</h2>
+<div class="question-begin">
+Question 3
+</div>
+<div class="question-body">
+<p>Sometimes we want to reverse-code items, so that the constructs which we believe them to be measuring all follow the same direction. For instance, consider the two questions below. Does 5 represent a similar thing on both questions? No, in fact we can theorise about a common underlying construct which would result in people generally answering 1 to “I love parties” and 5 to “I hate social gatherings” (or vice versa). So we can simply reverse the scores on one of the questions to make them follow the same pattern.
+<img src="images/survey/reverse.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>Take a look at the descriptions of the items above. Are there any you believe should be reverse coded?</p>
+<p><strong>Hint:</strong> Looking at <code>cor(na.omit(surveydf))</code> might help to decide!</p>
+<p>Reverse code any items you believe should be reverse-coded.</p>
+<p><strong>Hint:</strong> To reverse an item with scores ranging from min 1 to max 5, we need to make all the scores of 1 become 5, scores of 2 become 4, and so on…<br />
+What number satisfies all of these equations:</p>
+<ul>
+<li>? - 5 = 1</li>
+<li>? - 4 = 2</li>
+<li>? - 3 = 3</li>
+<li>? - 2 = 4</li>
+<li>? - 1 = 5</li>
+</ul>
+<p class="question-end">
+</p>
+</div>
+<div class="solution-begin">
+Solution <span id="sol-start-112" class="fa fa-plus solution-icon clickable" onclick="toggle_visibility(&#39;sol-body-112&#39;, &#39;sol-start-112&#39;)"></span>
+</div>
+<div id="sol-body-112" class="solution-body" style="display: none;">
+<pre class="r"><code>library(pheatmap)
+pheatmap(cor(na.omit(surveydf)))</code></pre>
+<p><img src="10_surveys_pca_files/figure-html/unnamed-chunk-11-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>From this we can see that the odd items are negative, and the even ones are positive.<br />
+From looking at the item labels, it is clear that for those items, if someone strongly agreed (scored 6), then they would be low in <em>Need for Cognition</em>. I want a high score to be high <em>Need for Cognition</em>. As a result, I want to reverse the even items d186, d188, d190, d192, d194.</p>
+<p>The quickest way is:</p>
+<pre class="r"><code>surveydf %&gt;%
+  mutate(across(c(d186, d188, d190, d192, d194), function(x) 6 - x))</code></pre>
+<pre><code>## # A tibble: 180 x 10
+##     d185  d186  d187  d188  d189  d190  d191  d192  d193  d194
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1     4     2     4     2     3     2     3     2     4     1
+##  2     5     3     4     3     4     3     4     1     4     3
+##  3     4     4     5     2     4     3     4     2     4     3
+##  4     2     2     3     2     4     2     4     2     4     3
+##  5     4     3     2     3     4     3     4     2     4     3
+##  6     5     4     5     1     3     4     5     3     5     4
+##  7     5     1     1     3     4     4     5     1     5     0
+##  8     5     3     3     2     4     3     3     2     4     2
+##  9     3     3     4     2     3     4     4     2     3     2
+## 10     4     4     5     2     4     3     5     3     4     4
+## # … with 170 more rows</code></pre>
+<p>In the code above, <code>function(x) 6 - x</code> is simply a function defining the mapping that will be applied.
+This mapping will be applied to all variables specified within the first argument of <code>across</code>.</p>
+</div>
+<p class="solution-end">
+</p>
+</div>
+<div id="rowwise-summaries" class="section level2">
+<h2>Rowwise summaries</h2>
+<div class="question-begin">
+Question 4
+</div>
+<div class="question-body">
+<p>Often, for various psychometric scales, we want to get an overall score for a participant across all the items in the scale.<br />
+Sometimes this will be the sum of all their scores, and sometimes this will be the mean.<br />
+These are then often used in clinical settings with various cut-offs for different ages taken to indicate things such as cognitive impairment.</p>
+<p>R has some handy functions for calculating these scores. Remember that each participant is a row in the data set. We want, for each row, to calculate the sum.
+The relevant function is <code>rowSums()</code>!</p>
+<p>There is also a <code>rowMeans()</code> function (I bet you can’t guess what that function does!)</p>
+<p class="question-end">
+</p>
+</div>
+<div class="solution-begin">
+Solution <span id="sol-start-113" class="fa fa-plus solution-icon clickable" onclick="toggle_visibility(&#39;sol-body-113&#39;, &#39;sol-start-113&#39;)"></span>
+</div>
+<div id="sol-body-113" class="solution-body" style="display: none;">
+<p>The sum of the scores for each case is:</p>
+<pre class="r"><code>surveydf %&gt;%
+  mutate(total_score = rowSums(.)) %&gt;% 
+  relocate(total_score)   # puts the new column first</code></pre>
+<pre><code>## # A tibble: 180 x 11
+##    total_score  d185  d186  d187  d188  d189  d190  d191  d192  d193  d194
+##          &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1          39     4     4     4     4     3     4     3     4     4     5
+##  2          38     5     3     4     3     4     3     4     5     4     3
+##  3          37     4     2     5     4     4     3     4     4     4     3
+##  4          36     2     4     3     4     4     4     4     4     4     3
+##  5          34     4     3     2     3     4     3     4     4     4     3
+##  6          37     5     2     5     5     3     2     5     3     5     2
+##  7          41     5     5     1     3     4     2     5     5     5     6
+##  8          37     5     3     3     4     4     3     3     4     4     4
+##  9          34     3     3     4     4     3     2     4     4     3     4
+## 10          36     4     2     5     4     4     3     5     3     4     2
+## # … with 170 more rows</code></pre>
+<p>If we were to compute the mean score for each participant, instead, we would do:</p>
+<pre class="r"><code>surveydf %&gt;%
+  mutate(mean_score = rowMeans(.)) %&gt;% 
+  relocate(mean_score)</code></pre>
+<pre><code>## # A tibble: 180 x 11
+##    mean_score  d185  d186  d187  d188  d189  d190  d191  d192  d193  d194
+##         &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1        3.9     4     4     4     4     3     4     3     4     4     5
+##  2        3.8     5     3     4     3     4     3     4     5     4     3
+##  3        3.7     4     2     5     4     4     3     4     4     4     3
+##  4        3.6     2     4     3     4     4     4     4     4     4     3
+##  5        3.4     4     3     2     3     4     3     4     4     4     3
+##  6        3.7     5     2     5     5     3     2     5     3     5     2
+##  7        4.1     5     5     1     3     4     2     5     5     5     6
+##  8        3.7     5     3     3     4     4     3     3     4     4     4
+##  9        3.4     3     3     4     4     3     2     4     4     3     4
+## 10        3.6     4     2     5     4     4     3     5     3     4     2
+## # … with 170 more rows</code></pre>
+</div>
+<p class="solution-end">
+</p>
+</div>
+</div>
+<div id="principal-component-analysis-pca" class="section level1">
+<h1>Principal component analysis (PCA)</h1>
+<div id="goal" class="section level2">
+<h2>Goal</h2>
+<p>The goal of principal component analysis (PCA) is to find a <em>smaller</em> number of uncorrelated variables which are linear combinations of the original (<em>many</em>) variables and explain most of the variation in the data.</p>
+</div>
+<div id="job-performance-data" class="section level2">
+<h2>Job performance data</h2>
+<p>The file <a href="https://uoepsy.github.io/data/job_performance.csv">job_performance.csv</a> contains data on fifty police officers who were rated in six different categories as part of an HR procedure. The rated skills were:</p>
+<ul>
+<li>communication skills: <code>commun</code></li>
+<li>problem solving: <code>probl_solv</code></li>
+<li>logical ability: <code>logical</code></li>
+<li>learning ability: <code>learn</code></li>
+<li>physical ability: <code>physical</code></li>
+<li>appearance: <code>appearance</code></li>
+</ul>
+<div class="question-begin">
+Question 5
+</div>
+<div class="question-body">
+<p>Load the job performance data into R and all it <code>job</code>. Check whether or not the data were read correctly into R.</p>
+<p class="question-end">
+</p>
+</div>
+<div class="solution-begin">
+Solution <span id="sol-start-114" class="fa fa-plus solution-icon clickable" onclick="toggle_visibility(&#39;sol-body-114&#39;, &#39;sol-start-114&#39;)"></span>
+</div>
+<div id="sol-body-114" class="solution-body" style="display: none;">
+<p>Let’s load the data:</p>
+<pre class="r"><code>library(tidyverse)
+
+job &lt;- read_csv(&#39;https://uoepsy.github.io/data/job_performance.csv&#39;)
+dim(job)</code></pre>
+<pre><code>## [1] 50  6</code></pre>
+<p>There are 50 observations on 6 variables.</p>
+<p>The top 6 rows in the data are:</p>
+<pre class="r"><code>head(job)</code></pre>
+<pre><code>## # A tibble: 6 x 6
+##   commun probl_solv logical learn physical appearance
+##    &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;      &lt;dbl&gt;
+## 1     12         52      20    44       48         16
+## 2     12         57      25    45       50         16
+## 3     12         54      21    45       50         16
+## 4     13         52      21    46       51         17
+## 5     14         54      24    46       51         17
+## 6     14         48      20    47       51         18</code></pre>
+</div>
+<p class="solution-end">
+</p>
+<div class="question-begin">
+Question 6
+</div>
+<div class="question-body">
+<p>Provide summary statistics for each variable in the data set.</p>
+<p class="question-end">
+</p>
+</div>
+<div class="solution-begin">
+Solution <span id="sol-start-115" class="fa fa-plus solution-icon clickable" onclick="toggle_visibility(&#39;sol-body-115&#39;, &#39;sol-start-115&#39;)"></span>
+</div>
+<div id="sol-body-115" class="solution-body" style="display: none;">
+<p>We now inspect some descriptive statistics for each variable in the dataset:</p>
+<pre class="r"><code># Quick summary
+summary(job)</code></pre>
+<pre><code>##      commun        probl_solv       logical          learn      
+##  Min.   :12.00   Min.   :48.00   Min.   :20.00   Min.   :44.00  
+##  1st Qu.:16.00   1st Qu.:52.25   1st Qu.:22.00   1st Qu.:48.00  
+##  Median :18.00   Median :54.00   Median :24.00   Median :50.00  
+##  Mean   :17.68   Mean   :54.16   Mean   :24.02   Mean   :50.28  
+##  3rd Qu.:19.75   3rd Qu.:56.00   3rd Qu.:26.00   3rd Qu.:52.00  
+##  Max.   :24.00   Max.   :59.00   Max.   :31.00   Max.   :56.00  
+##     physical       appearance   
+##  Min.   :48.00   Min.   :16.00  
+##  1st Qu.:52.25   1st Qu.:19.00  
+##  Median :54.00   Median :21.00  
+##  Mean   :54.16   Mean   :21.06  
+##  3rd Qu.:56.00   3rd Qu.:23.00  
+##  Max.   :59.00   Max.   :28.00</code></pre>
+<p><strong>OPTIONAL</strong></p>
+<p>If you wish to create a nice looking table for a report, you could try the following code.
+However, I should warn you: this code is quite difficult to understand so, if you are interested, attend a drop-in!</p>
+<pre class="r"><code>library(gt)
+
+# Mean and SD of each variable
+job %&gt;% 
+  summarise(across(everything(), list(M = mean, SD = sd))) %&gt;%
+  pivot_longer(everything()) %&gt;%
+  mutate(name = str_replace(name, &#39;_M&#39;, &#39;.M&#39;),
+         name = str_replace(name, &#39;_SD&#39;, &#39;.SD&#39;)) %&gt;%
+  separate(name, into = c(&#39;variable&#39;, &#39;summary&#39;), sep = &#39;\\.&#39;) %&gt;%
+  pivot_wider(names_from = summary, values_from = value) %&gt;% 
+  gt()</code></pre>
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#lhvsfhojkw .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#lhvsfhojkw .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#lhvsfhojkw .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#lhvsfhojkw .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#lhvsfhojkw .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#lhvsfhojkw .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#lhvsfhojkw .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#lhvsfhojkw .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#lhvsfhojkw .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#lhvsfhojkw .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#lhvsfhojkw .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#lhvsfhojkw .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#lhvsfhojkw .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#lhvsfhojkw .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#lhvsfhojkw .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#lhvsfhojkw .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#lhvsfhojkw .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#lhvsfhojkw .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#lhvsfhojkw .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#lhvsfhojkw .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#lhvsfhojkw .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#lhvsfhojkw .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#lhvsfhojkw .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#lhvsfhojkw .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#lhvsfhojkw .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#lhvsfhojkw .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#lhvsfhojkw .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#lhvsfhojkw .gt_left {
+  text-align: left;
+}
+
+#lhvsfhojkw .gt_center {
+  text-align: center;
+}
+
+#lhvsfhojkw .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#lhvsfhojkw .gt_font_normal {
+  font-weight: normal;
+}
+
+#lhvsfhojkw .gt_font_bold {
+  font-weight: bold;
+}
+
+#lhvsfhojkw .gt_font_italic {
+  font-style: italic;
+}
+
+#lhvsfhojkw .gt_super {
+  font-size: 65%;
+}
+
+#lhvsfhojkw .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="lhvsfhojkw" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">variable</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">M</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">SD</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_left">commun</td>
+      <td class="gt_row gt_right">17.68</td>
+      <td class="gt_row gt_right">2.743750</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">probl_solv</td>
+      <td class="gt_row gt_right">54.16</td>
+      <td class="gt_row gt_right">2.410521</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">logical</td>
+      <td class="gt_row gt_right">24.02</td>
+      <td class="gt_row gt_right">2.486617</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">learn</td>
+      <td class="gt_row gt_right">50.28</td>
+      <td class="gt_row gt_right">2.835921</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">physical</td>
+      <td class="gt_row gt_right">54.16</td>
+      <td class="gt_row gt_right">2.410521</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">appearance</td>
+      <td class="gt_row gt_right">21.06</td>
+      <td class="gt_row gt_right">2.992576</td>
+    </tr>
+  </tbody>
+  
+  
+</table></div>
+</div>
+<p class="solution-end">
+</p>
+</div>
+<div id="is-pca-needed" class="section level2">
+<h2>Is PCA needed?</h2>
+<p>If the original variables are highly correlated, it is possible to reduce the dimensionality of the problem under investigation without losing too much information.</p>
+<p>On the other side, when the correlation between the variables under study is weak, a larger number of components is needed in order to explain sufficient variability.</p>
+<div class="question-begin">
+Question 7
+</div>
+<div class="question-body">
+<p>Investigate whether or not the recorded variables are highly correlated and explain whether or not you PCA might be useful in this case.</p>
+<p class="question-end">
+</p>
+</div>
+<div class="solution-begin">
+Solution <span id="sol-start-116" class="fa fa-plus solution-icon clickable" onclick="toggle_visibility(&#39;sol-body-116&#39;, &#39;sol-start-116&#39;)"></span>
+</div>
+<div id="sol-body-116" class="solution-body" style="display: none;">
+<p>Let’s start by looking at the correlation matrix of the data:</p>
+<pre class="r"><code>library(pheatmap)
+
+R &lt;- cor(job)
+
+pheatmap(R, breaks = seq(-1, 1, length.out = 100))</code></pre>
+<div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-19"></span>
+<img src="10_surveys_pca_files/figure-html/unnamed-chunk-19-1.png" alt="Correlation between the variables in the ``Job'' dataset" width="70%" />
+<p class="caption">
+Figure 1: Correlation between the variables in the ``Job’’ dataset
+</p>
+</div>
+<p>The correlation between the variables seems to be quite large.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
+<p>There appears to be a group of highly correlated variables comprising physical ability, appearance, communication skills, and learning ability which are correlated among themselves but uncorrelated with another group of variables.
+The second group comprises problem solving and logical ability.</p>
+<p>This suggests that PCA might be useful in this problem to reduce the dimensionality without a significant loss of information.</p>
+</div>
+<p class="solution-end">
+</p>
+</div>
+<div id="should-pca-be-performed-on-the-covariance-or-correlation-matrix" class="section level2">
+<h2>Should PCA be performed on the covariance or correlation matrix?</h2>
+<p>This depends on the variances of the variables in the dataset.
+If the variables have large differences in their variances, then the variables with the largest variances will tend to dominate the first few principal components.</p>
+<div class="question-begin">
+Question 8
+</div>
+<div class="question-body">
+<p>Look at the variance of the variables in the data set. Do you think that PCA should be carried on the covariance matrix or the correlation matrix?</p>
+<p class="question-end">
+</p>
+</div>
+<div class="solution-begin">
+Solution <span id="sol-start-117" class="fa fa-plus solution-icon clickable" onclick="toggle_visibility(&#39;sol-body-117&#39;, &#39;sol-start-117&#39;)"></span>
+</div>
+<div id="sol-body-117" class="solution-body" style="display: none;">
+<p>Let’s have a look at the standard deviation of each variable:</p>
+<pre class="r"><code>job %&gt;% 
+  summarise(across(everything(), sd))</code></pre>
+<pre><code>## # A tibble: 1 x 6
+##   commun probl_solv logical learn physical appearance
+##    &lt;dbl&gt;      &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;      &lt;dbl&gt;
+## 1   2.74       2.41    2.49  2.84     2.41       2.99</code></pre>
+<p>As the standard deviations appear to be fairly similar (and so will the variances) we can perform PCA using the covariance matrix.</p>
+</div>
+<p class="solution-end">
+</p>
+</div>
+<div id="perform-pca" class="section level2">
+<h2>Perform PCA</h2>
+<div class="question-begin">
+Question 9
+</div>
+<div class="question-body">
+<p>Using the <code>principal()</code> function from the <code>psych</code> package, perform a PCA of the job performance data. Call the output <code>job_pca</code>.</p>
+<pre><code>job_pca &lt;- principal(job, nfactors = ncol(job), covar = ..., rotate = &#39;none&#39;)
+job_pca$loadings</code></pre>
+<p>Depending on your answer to the previous question, either set <code>covar = TRUE</code> or <code>covar = FALSE</code> within the <code>principal()</code> function.</p>
+<p><strong>Warning:</strong> the output of the function will be in terms of standardized variables nevertheless. So you will see output with standard deviation of 1.</p>
+<p class="question-end">
+</p>
+</div>
+<div class="solution-begin">
+Solution <span id="sol-start-118" class="fa fa-plus solution-icon clickable" onclick="toggle_visibility(&#39;sol-body-118&#39;, &#39;sol-start-118&#39;)"></span>
+</div>
+<div id="sol-body-118" class="solution-body" style="display: none;">
+<pre class="r"><code>library(psych)
+
+job_pca &lt;- principal(job, nfactors = ncol(job), covar = TRUE, rotate = &#39;none&#39;)
+job_pca$loadings</code></pre>
+<pre><code>## 
+## Loadings:
+##            PC1    PC2    PC3    PC4    PC5    PC6   
+## commun      0.984 -0.120                0.101       
+## probl_solv  0.223  0.810  0.543                     
+## logical     0.329  0.747 -0.578                     
+## learn       0.987 -0.110                       0.105
+## physical    0.988                      -0.110       
+## appearance  0.979 -0.125         0.161              
+## 
+##                  PC1   PC2   PC3   PC4   PC5   PC6
+## SS loadings    4.035 1.261 0.631 0.035 0.022 0.016
+## Proportion Var 0.673 0.210 0.105 0.006 0.004 0.003
+## Cumulative Var 0.673 0.883 0.988 0.994 0.997 1.000</code></pre>
+<p>The output is made up of two parts.</p>
+<p>First, it shows the <em>loading matrix</em>. In each column of the loading matrix we find how much each of the measured variables contributes to the computed new axis/direction (that is, the principal component).
+Notice that there are as many principal components as variables. Next, there are extra columns called</p>
+<p>The second part of the output displays the contribution of each component to the total variance.</p>
+<p>Before interpreting it however, let’s focus on the last row of that output called “Cumulative Var”. This displays the cumulative sum of the variances of each principal component.
+Taken all together, the six principal components taken explain all of the total variance in the original data.
+In other words, the total variance of the principal components (the sum of their variances) is equal to the total variance in the original data (the sum of the variances of the variables).</p>
+<p>However, our goal is to reduce the dimensionality of our data, so it comes natural to wonder which of the six principal components explain most of the variability, and which components instead do not contribute substantially to the total variance.</p>
+<p>To that end, the second row “Proportion Var” displays the proportion of the total variance explained by each component, i.e. the variance of the principal component divided by the total variance.</p>
+<p>The last row, as we saw, is the cumulative proportion of explained variance: <code>0.673</code>, <code>0.673 + 0.210</code>, <code>0.673 + 0.210 + 0.105</code>, and so on.</p>
+<p>We also notice that the first PC alone explains 67.3% of the total variability, while the first two components together explain almost 90% of the total variability.
+From the third component onwards, we do not see such a sharp increase in the proportion of explained variance, and the cumulative proportion slowly reaches the total ratio of 1 (or 100%).</p>
+</div>
+<p class="solution-end">
+</p>
+</div>
+<div id="how-many-principal-components-should-we-keep" class="section level2">
+<h2>How many principal components should we keep?</h2>
+<p>There is no single best method to select the optimal number of components to keep, while discarding the remaining ones (which are then considered as noise components).</p>
+<p>The following three heuristic rules are commonly used in the literature:</p>
+<ul>
+<li>The cumulative proportion of explained variance criterion</li>
+<li>Kaiser’s rule</li>
+<li>The scree plot</li>
+<li>Velicer’s Minimum Average Partial method</li>
+<li>Parallel analysis</li>
+</ul>
+<p>In the next sections we will analyse each of them in turn.</p>
+<div id="the-cumulative-proportion-of-explained-variance-criterion" class="section level3">
+<h3>The cumulative proportion of explained variance criterion</h3>
+<p>The rule suggests to <strong>keep as many principal components as needed in order to explain approximately 80-90% of the total variance.</strong></p>
+<div class="question-begin">
+Question 10
+</div>
+<div class="question-body">
+<p>Looking again at the PCA output, how many principal components would you keep if you were following the cumulative proportion of explained variance criterion?</p>
+<p class="question-end">
+</p>
+</div>
+<div class="solution-begin">
+Solution <span id="sol-start-119" class="fa fa-plus solution-icon clickable" onclick="toggle_visibility(&#39;sol-body-119&#39;, &#39;sol-start-119&#39;)"></span>
+</div>
+<div id="sol-body-119" class="solution-body" style="display: none;">
+<p>Let’s look again at the PCA summary:</p>
+<pre class="r"><code>job_pca$loadings</code></pre>
+<pre><code>## 
+## Loadings:
+##            PC1    PC2    PC3    PC4    PC5    PC6   
+## commun      0.984 -0.120                0.101       
+## probl_solv  0.223  0.810  0.543                     
+## logical     0.329  0.747 -0.578                     
+## learn       0.987 -0.110                       0.105
+## physical    0.988                      -0.110       
+## appearance  0.979 -0.125         0.161              
+## 
+##                  PC1   PC2   PC3   PC4   PC5   PC6
+## SS loadings    4.035 1.261 0.631 0.035 0.022 0.016
+## Proportion Var 0.673 0.210 0.105 0.006 0.004 0.003
+## Cumulative Var 0.673 0.883 0.988 0.994 0.997 1.000</code></pre>
+<p>The following part of the output tells us that the first two components explain 88.3% of the total variance.</p>
+<pre><code>Cumulative Var 0.673 0.883 0.988 0.994 0.997 1.000</code></pre>
+<p>According to this criterion, we should keep 2 principal components.</p>
+</div>
+<p class="solution-end">
+</p>
+</div>
+<div id="kaisers-rule" class="section level3">
+<h3>Kaiser’s rule</h3>
+<p>According to Kaiser’s rule, we should <strong>keep the principal components having variance larger than 1</strong>. Standardized variables have a variance equal 1. Because we have 6 variables in the data set, and the total variance is 6, the value 1 represents the average variance in the data:
+<span class="math display">\[
+\frac{1 + 1 + 1 + 1 + 1 + 1}{6} = 1
+\]</span></p>
+<p><strong>Hint:</strong></p>
+<p>The variances of each PC are shown in the row of the output named <code>SS loadings</code> and also in
+<code>job_pca$values</code>. The average variance is:</p>
+<pre class="r"><code>mean(job_pca$values)</code></pre>
+<pre><code>## [1] 1</code></pre>
+<div class="question-begin">
+Question 11
+</div>
+<div class="question-body">
+<p>Looking again at the PCA output, how many principal components would you keep if you were following Kaiser’s criterion?</p>
+<p class="question-end">
+</p>
+</div>
+<div class="solution-begin">
+Solution <span id="sol-start-120" class="fa fa-plus solution-icon clickable" onclick="toggle_visibility(&#39;sol-body-120&#39;, &#39;sol-start-120&#39;)"></span>
+</div>
+<div id="sol-body-120" class="solution-body" style="display: none;">
+<pre class="r"><code>job_pca$loadings</code></pre>
+<pre><code>## 
+## Loadings:
+##            PC1    PC2    PC3    PC4    PC5    PC6   
+## commun      0.984 -0.120                0.101       
+## probl_solv  0.223  0.810  0.543                     
+## logical     0.329  0.747 -0.578                     
+## learn       0.987 -0.110                       0.105
+## physical    0.988                      -0.110       
+## appearance  0.979 -0.125         0.161              
+## 
+##                  PC1   PC2   PC3   PC4   PC5   PC6
+## SS loadings    4.035 1.261 0.631 0.035 0.022 0.016
+## Proportion Var 0.673 0.210 0.105 0.006 0.004 0.003
+## Cumulative Var 0.673 0.883 0.988 0.994 0.997 1.000</code></pre>
+<p>The variances are shown in the row</p>
+<pre><code>SS loadings    4.035 1.261 0.631 0.035 0.022 0.016</code></pre>
+<p>From the result we see that only the first two principal components have variance greater than 1, so this rule suggests to keep 2 PCs only.</p>
+</div>
+<p class="solution-end">
+</p>
+</div>
+<div id="the-scree-plot" class="section level3">
+<h3>The scree plot</h3>
+<p>The scree plot is a graphical criterion which involves plotting the variance for each principal component.
+This can be easily done by calling <code>plot</code> on the variances, which are stored in <code>job_pca$values</code></p>
+<pre class="r"><code>plot(x = 1:length(job_pca$values), y = job_pca$values, 
+     type = &#39;b&#39;, xlab = &#39;&#39;, ylab = &#39;Variance&#39;, 
+     main = &#39;Police officers: scree plot&#39;, frame.plot = FALSE)</code></pre>
+<p><img src="10_surveys_pca_files/figure-html/unnamed-chunk-25-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>where the argument <code>type = 'b'</code> tells R that the plot should have <em>both</em> points and lines.</p>
+<p>A typical scree plot features higher variances for the initial components and quickly drops to small variances where the curve is almost flat.
+The flat part of the curve represents the noise components, which are not able to capture the main sources of variability in the system.</p>
+<p>According to the scree plot criterion, we should <strong>keep as many principal components as where the “elbow” in the plot occurs.</strong> By elbow we mean the variance before the curve looks almost flat.</p>
+<p>Alternatively, some people prefer to use the function <code>scree()</code> from the <code>psych</code> package:</p>
+<pre class="r"><code>scree(job, factors = FALSE)</code></pre>
+<p><img src="10_surveys_pca_files/figure-html/unnamed-chunk-26-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>This also draws a horizontal line at y = 1. So, if you are making a decision about how many PCs to keep by looking at where the plot falls below the y = 1 line, you are basically following Kaiser’s rule. In fact, Kaiser’s criterion tells you to keep as many PCs as are those with a variance (= eigenvalue) greater than 1.</p>
+<div class="question-begin">
+Question 12
+</div>
+<div class="question-body">
+<p>According to the scree plot, how many principal components would you retain?</p>
+<p class="question-end">
+</p>
+</div>
+<div class="solution-begin">
+Solution <span id="sol-start-121" class="fa fa-plus solution-icon clickable" onclick="toggle_visibility(&#39;sol-body-121&#39;, &#39;sol-start-121&#39;)"></span>
+</div>
+<div id="sol-body-121" class="solution-body" style="display: none;">
+<p>This criterion then suggests to keep three principal components.</p>
+</div>
+<p class="solution-end">
+</p>
+</div>
+<div id="velicers-minimum-average-partial-method" class="section level3">
+<h3>Velicer’s Minimum Average Partial method</h3>
+<div class="question-begin">
+Question 13
+</div>
+<div class="question-body">
+<p>How many components should we keep according to the MAP method?</p>
+<p class="question-end">
+</p>
+</div>
+<div class="solution-begin">
+Solution <span id="sol-start-122" class="fa fa-plus solution-icon clickable" onclick="toggle_visibility(&#39;sol-body-122&#39;, &#39;sol-start-122&#39;)"></span>
+</div>
+<div id="sol-body-122" class="solution-body" style="display: none;">
+<pre class="r"><code>job_map &lt;- VSS(job, plot=FALSE, method=&quot;pc&quot;, n = ncol(job))$map
+paste(&quot;MAP is lowest for&quot;, which.min(job_map), &quot;components&quot;)</code></pre>
+<pre><code>## [1] &quot;MAP is lowest for 2 components&quot;</code></pre>
+<p>According to the MAP criterion we should keep 2 principal components.</p>
+</div>
+<p class="solution-end">
+</p>
+</div>
+<div id="parallel-analysis" class="section level3">
+<h3>Parallel analysis</h3>
+<div class="question-begin">
+Question 14
+</div>
+<div class="question-body">
+<p>How many components should we keep according to parallel analysis?</p>
+<p class="question-end">
+</p>
+</div>
+<div class="solution-begin">
+Solution <span id="sol-start-123" class="fa fa-plus solution-icon clickable" onclick="toggle_visibility(&#39;sol-body-123&#39;, &#39;sol-start-123&#39;)"></span>
+</div>
+<div id="sol-body-123" class="solution-body" style="display: none;">
+<pre class="r"><code>fa.parallel(job, fa=&quot;pc&quot;, quant=.95)</code></pre>
+<p><img src="10_surveys_pca_files/figure-html/unnamed-chunk-28-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<pre><code>## Parallel analysis suggests that the number of factors =  NA  and the number of components =  1</code></pre>
+<p>Parallel analysis suggests to keep 1 principal component only as there is only one PC with an eigenvalue higher than the simulated random ones in red.</p>
+</div>
+<p class="solution-end">
+</p>
+</div>
+</div>
+<div id="interpretation" class="section level2">
+<h2>Interpretation</h2>
+<p>Because three out of the five selection criteria introduced above suggest to keep 2 principal components, in the following we will work with the first two PCs only.</p>
+<p>Let’s have a look at the selected principal components:</p>
+<pre class="r"><code>job_pca$loadings[, 1:2]</code></pre>
+<pre><code>##                  PC1         PC2
+## commun     0.9840708 -0.11972298
+## probl_solv 0.2233011  0.80950107
+## logical    0.3287266  0.74661139
+## learn      0.9869336 -0.10970488
+## physical   0.9883609 -0.07835277
+## appearance 0.9787497 -0.12532863</code></pre>
+<p>and at their corresponding proportion of total variance explained:</p>
+<pre class="r"><code>job_pca$values / sum(job_pca$values)</code></pre>
+<pre><code>## [1] 0.672527675 0.210155954 0.105099073 0.005767644 0.003721180 0.002728475</code></pre>
+<p>We see that the first PC accounts for 67.3% of the total variability. All loadings seem to have the same magnitude apart from <code>probl_solv</code> and <code>logical</code> which are closer to zero.
+The first component looks like a sort of average of the officers performance scores excluding problem solving and logical ability.</p>
+<p>The second principal component, which explains only 21% of the total variance, has two loadings clearly distant from zero: the ones associated to problem solving and logical ability.
+It distinguishes police officers with strong logical and problem solving skills and a low score on the test (note the negative magnitude) from the other officers.</p>
+<p>We have just seen how to interpret the first components by looking at the magnitude and sign of the coefficients for each measured variable.</p>
+<p>For interpretation purposes, it might help hiding very small scores in the loadings. This can be done by specifying the cutoff value in the <code>print()</code> function. However, this only works when you pass the loadings for <strong>all</strong> the PCs:</p>
+<pre class="r"><code>print(job_pca$loadings, cutoff = 0.3)</code></pre>
+<pre><code>## 
+## Loadings:
+##            PC1    PC2    PC3    PC4    PC5    PC6   
+## commun      0.984                                   
+## probl_solv         0.810  0.543                     
+## logical     0.329  0.747 -0.578                     
+## learn       0.987                                   
+## physical    0.988                                   
+## appearance  0.979                                   
+## 
+##                  PC1   PC2   PC3   PC4   PC5   PC6
+## SS loadings    4.035 1.261 0.631 0.035 0.022 0.016
+## Proportion Var 0.673 0.210 0.105 0.006 0.004 0.003
+## Cumulative Var 0.673 0.883 0.988 0.994 0.997 1.000</code></pre>
+<p><br></p>
+<p>In the literature, some authors also suggest to look at the correlation between each principal component and the measured variables:</p>
+<pre class="r"><code># First PC
+cor(job_pca$scores[,1], job)</code></pre>
+<pre><code>##         commun probl_solv   logical     learn  physical appearance
+## [1,] 0.9854237  0.2137116 0.3187957 0.9882455 0.9885528  0.9809939</code></pre>
+<p>The first PC is strongly correlated with all the measured variables except <code>probl_solv</code> and <code>logical</code>.
+As we mentioned above, all variables seem to contributed to the first PC.</p>
+<pre class="r"><code># Second PC
+cor(job_pca$scores[,2], job)</code></pre>
+<pre><code>##          commun probl_solv   logical      learn   physical appearance
+## [1,] -0.1634967  0.7924169 0.7378895 -0.1536895 -0.1220727 -0.1693193</code></pre>
+<p>The second PC is strongly correlated with <code>probl_solv</code> and <code>logical</code>, and slightly negatively correlated with the remaining variables. This separates police offices with clear logical and problem solving skills and a small score on the test (negative sign) from the others.</p>
+</div>
+<div id="plot-the-retained-principal-components" class="section level2">
+<h2>Plot the retained principal components</h2>
+<p>We can now visualise the statistical units (police officers) in the reduced space given by the retained principal components.</p>
+<pre class="r"><code>plot(x = job_pca$scores[, 1], y = job_pca$scores[, 2], 
+     pch = 16, col = &#39;dodgerblue&#39;, xlab = &#39;PC1&#39;, ylab = &#39;PC2&#39;)</code></pre>
+<p><img src="10_surveys_pca_files/figure-html/unnamed-chunk-34-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<div class="optional-begin">
+Optional<span id="opt-start-124" class="fa fa-plus optional-icon clickable" onclick="toggle_visibility(&#39;opt-body-124&#39;, &#39;opt-start-124&#39;)"></span>
+</div>
+<div id="opt-body-124" class="optional-body" style="display: none;">
+<p><strong>How well are the units represented in the reduced space?</strong></p>
+<p>We now focus our attention on the following question: Are all the statistical units (police officers) well represented in the 2D plot?</p>
+<p>The 2D representation of the original data, which comprise 6 measured variables, is an approximation and henceforth it may happen that not all units are well represented in this new space.</p>
+<p>Typically, it is good to assess the approximation for each statistical unit by inspecting the scores on the discarded principal components.
+If a unit has a high score on those components, then this is a sign that the unit might be highly misplaced in the new space and misrepresented.</p>
+<p>Consider the 3D example below. There are three cases (= units or individuals). In the original space they are all very different from each other. For example, cases 1 and 2 are very different in their x and y values, but very similar in their z value. Cases 2 and 3 are very similar in their x and y values but very different in their z value. Cases 1 and 3 have very different values for all three variables x, y, and z.</p>
+<p>However, when represented in the 2D space given by the two principal components, units 2 and 3 seems like they are very similar when, in fact, they were very different in the original space which also accounted for the z variable.</p>
+<p><img src="images/pca_bad_representation.png" width="\textwidth" style="display: block; margin: auto;" /></p>
+<p>We typically measure how badly a unit is represented in the new coordinate system by considering the <strong>sum of squared scores on the discarded principal components:</strong></p>
+<pre class="r"><code>scores_discarded &lt;- job_pca$scores[, -(1:2)]
+sum_sq &lt;- rowSums(scores_discarded^2)
+sum_sq</code></pre>
+<pre><code>##  [1]  28.509764  46.889599  63.690141  64.235774  36.577460  17.393796
+##  [7]  49.237998  35.095353  18.564496  19.272346  18.564496  24.435681
+## [13]  12.389191  59.101079  24.432716  33.184844  13.401839  12.685414
+## [19]  11.222085  78.868819  14.155536  34.175498  95.567877  18.399495
+## [25]  16.447519  14.408862  31.966172  33.521642  40.122681  32.480075
+## [31]  16.851942  24.845993  30.836630  16.001226  29.587409  11.013435
+## [37]   8.065003  18.181302  14.604670  23.732693  29.823514  41.371227
+## [43]   9.298762  65.418475  21.976763  63.973763  36.092667  84.980382
+## [49] 129.650749  88.002871</code></pre>
+<p>Units with a high score should be considered for further inspection as it may happen that they are represented as close to another unit when, in fact, they might be very different.</p>
+<pre class="r"><code>boxplot(sum_sq)</code></pre>
+<p><img src="10_surveys_pca_files/figure-html/unnamed-chunk-37-1.png" width="70%" style="display: block; margin: auto;" /></p>
+<p>There seem to be only five outliers, and they are not too high compared to the rest of the scores. For this reason, we will consider the 2D representation of the data to be satisfactory.</p>
+</div>
+<p class="optional-end">
+</p>
+<!-- Formatting -->
+<div class="tocify-extend-page" data-unique="tocify-extend-page" style="height: 0;">
+
+</div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>If negative correlations were present, we would think in absolute value.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

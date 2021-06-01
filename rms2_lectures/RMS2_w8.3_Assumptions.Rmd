@@ -1,0 +1,96 @@
+---
+title: "<b>Week 8: ANOVA as lm - Assumptions </b>"
+subtitle: "RMS2<BR><BR> "
+author: ""
+institute: "Department of Psychology<br>The University of Edinburgh"
+date: "AY 2020-2021"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: xaringan-themer.css
+    nature:
+      ratio: '16:9'
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+```{r xaringan-themer, include = FALSE}
+library(xaringanthemer)
+style_mono_accent(
+  #base_color = "#0F4C81", # DAPR1
+   base_color = "#BF1932", # DAPR2
+  # base_color = "#88B04B", # DAPR3 
+  # base_color = "#FCBB06", # USMR
+  # base_color = "#a41ae4", # MSMR
+  header_color = "#000000",
+  header_font_google = google_font("Source Sans Pro"),
+  header_font_weight = 400,
+  text_font_google = google_font("Source Sans Pro", "400", "400i", "600", "600i"),
+  code_font_google = google_font("Source Code Pro")
+)
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(kableExtra)
+```
+
+
+# Topics for today
+
++ A brief word about assumptions in linear models for factorial designs.
+
+---
+# Data and model
+
++ A little reminder of our model:
+
+```{r}
+hosp_tbl <- read_csv("hospital.csv", col_types = "dff")
+m4 <- lm(SWB ~ Treatment + Hospital + Treatment*Hospital, data = hosp_tbl)
+```
+
+---
+# Assumptions
+
++ And a reminder of linear model assumptions:
+  + **L**inearity: The relationship between $y$ and $x$ is linear.
+  + **I**ndependence of errors: The error terms should be independent from one another.
+  + **N**ormality: The errors $\epsilon$ are normally distributed
+  + **E**qual variances ("Homoscedasticity"): The scale of the variability of the errors  $\epsilon$ is constant at all values of $x$.  
+
+--
+
+**That is, exactly the same assumptions as would be the case for any other linear model**
+
+---
+# Assumptions: Equal variances
+```{r}
+plot(m4, which = 1)
+```
+
+---
+# Assumptions: Normality of residuals
+```{r}
+plot(m4, which = 2)
+```
+
+---
+# Diagnostics: Influence
+```{r}
+plot(m4, which = 4)
+```
+
+
+---
+# Summary of today
+
++ Briefly recapped model assumption testing for linear models
+
++ Discussed the key advantage in this respect from approach experimental design from a linear model perspective (rather than traditional ANOVA) 
